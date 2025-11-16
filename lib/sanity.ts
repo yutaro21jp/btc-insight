@@ -3,7 +3,7 @@ import { createClient } from 'next-sanity'
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID, // あなたのSanityのプロジェクトID
   dataset: 'production',
-  apiVersion: '2023-01-01', // 最新の日付でOK
+  apiVersion: '2025-02-19', // 最新の日付でOK
   useCdn: true,
 })
 

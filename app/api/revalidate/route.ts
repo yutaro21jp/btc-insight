@@ -8,7 +8,11 @@ export async function POST(req: NextRequest) {
   const secret = process.env.SANITY_REVALIDATE_SECRET
   const authHeader = req.headers.get('authorization')
 
-  if (!secret || authHeader !== `Bearer ${secret}`) {
+  if (!secret) {
+    return new Response('Missing SANITY_REVALIDATE_SECRET', { status: 500 })
+  }
+
+  if (authHeader !== `Bearer ${secret}`) {
     return new Response(ERROR_UNAUTHORIZED, { status: 401 })
   }
 
