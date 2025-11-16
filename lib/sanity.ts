@@ -31,7 +31,7 @@ export async function getPosts(excludeSlugs?: string[]) {
     excerpt,
     mainImage
   }`
-  return await client.fetch(query)
+  return await client.fetch(query, {}, { next: { tags: ['posts'] } })
 }
 
 export async function getWelcomePost() {
@@ -43,7 +43,7 @@ export async function getWelcomePost() {
     excerpt,
     mainImage
   }`
-  return await client.fetch(query)
+  return await client.fetch(query, {}, { next: { tags: ['posts', 'post:welcome'] } })
 }
 
 export async function getPostBySlug(slug: string) {
@@ -59,7 +59,7 @@ export async function getPostBySlug(slug: string) {
     "categories": categories[]->{title, slug},
     "tags": tags[]->{name, slug}
   }`
-  return await client.fetch(query, { slug }, { cache: 'no-store' })
+  return await client.fetch(query, { slug }, { next: { tags: ['posts', `post:${slug}`] } })
 }
 
 export async function getAuthorBySlug(authorSlug: string) {
@@ -69,7 +69,7 @@ export async function getAuthorBySlug(authorSlug: string) {
     bio,
     "slug": slug.current
   }`
-  return await client.fetch(query, { authorSlug })
+  return await client.fetch(query, { authorSlug }, { next: { tags: [`author:${authorSlug}`] } })
 }
 
 export async function getPostsByAuthorSlug(authorSlug: string) {
@@ -80,7 +80,7 @@ export async function getPostsByAuthorSlug(authorSlug: string) {
     publishedAt,
     mainImage
   }`
-  return await client.fetch(query, { authorSlug })
+  return await client.fetch(query, { authorSlug }, { next: { tags: ['posts', `author:${authorSlug}`] } })
 }
 
 export async function getPostsByCategorySlug(categorySlug: string) {
@@ -91,7 +91,7 @@ export async function getPostsByCategorySlug(categorySlug: string) {
     publishedAt,
     mainImage
   }`
-  return await client.fetch(query, { categorySlug })
+  return await client.fetch(query, { categorySlug }, { next: { tags: ['posts', `category:${categorySlug}`] } })
 }
 
 export async function getCategoryBySlug(categorySlug: string) {
@@ -99,7 +99,7 @@ export async function getCategoryBySlug(categorySlug: string) {
     title,
     "slug": slug.current
   }`
-  return await client.fetch(query, { categorySlug })
+  return await client.fetch(query, { categorySlug }, { next: { tags: [`category:${categorySlug}`] } })
 }
 
 export async function getTagBySlug(tagSlug: string) {
@@ -107,7 +107,7 @@ export async function getTagBySlug(tagSlug: string) {
     name,
     "slug": slug.current
   }`
-  return await client.fetch(query, { tagSlug })
+  return await client.fetch(query, { tagSlug }, { next: { tags: [`tag:${tagSlug}`] } })
 }
 
 export async function getPostsByTagSlug(tagSlug: string) {
@@ -118,5 +118,5 @@ export async function getPostsByTagSlug(tagSlug: string) {
     publishedAt,
     mainImage
   }`
-  return await client.fetch(query, { tagSlug })
+  return await client.fetch(query, { tagSlug }, { next: { tags: ['posts', `tag:${tagSlug}`] } })
 }

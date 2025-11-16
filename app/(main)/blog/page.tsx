@@ -1,5 +1,5 @@
 
-import { client, urlFor } from '@/lib/sanity'
+import { getPosts, urlFor } from '@/lib/sanity'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Metadata } from 'next'
@@ -38,15 +38,7 @@ type Post = {
 }
 
 export default async function BlogPage() {
-  const posts: Post[] = await client.fetch(`
-    *[_type == "post"] | order(publishedAt desc) {
-      _id,
-      title,
-      slug,
-      publishedAt,
-      mainImage
-    }
-  `)
+  const posts: Post[] = await getPosts()
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-8">
