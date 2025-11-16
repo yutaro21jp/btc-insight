@@ -9,6 +9,15 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('category').title('Categories'),
       S.documentTypeListItem('tag').title('Tags'),
       S.documentTypeListItem('author').title('Authors'),
+      S.listItem()
+        .title('Unused Images')
+        .child(
+          S.documentTypeList('sanity.imageAsset')
+            .title('Unused Images')
+            .filter(
+              '_type == "sanity.imageAsset" && count(*[!(_id in path("drafts.**")) && references(^._id)]) == 0',
+            ),
+        ),
       S.divider(),
       ...S.documentTypeListItems().filter(
         (item) => item.getId() && !['post', 'category', 'author', 'tag'].includes(item.getId()!),

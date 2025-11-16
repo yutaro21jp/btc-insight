@@ -46,18 +46,6 @@ export async function getWelcomePost() {
   return await client.fetch(query)
 }
 
-export async function getHanseikaiExpoPost() {
-  const query = `*[_type == "post" && slug.current == "hanseikai-expo-2025"][0]{
-    _id,
-    title,
-    slug,
-    publishedAt,
-    excerpt,
-    mainImage
-  }`
-  return await client.fetch(query)
-}
-
 export async function getPostBySlug(slug: string) {
   const query = `*[_type == "post" && slug.current == $slug][0]{
     title,
