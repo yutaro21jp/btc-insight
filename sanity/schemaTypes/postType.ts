@@ -38,6 +38,13 @@ export const postType = defineType({
       ]
     }),
     defineField({
+      name: 'showMainImageAtTop',
+      title: 'Show main image at top of post',
+      type: 'boolean',
+      description: 'Toggle to show or hide the main image at the top of the article.',
+      initialValue: true,
+    }),
+    defineField({
       name: 'categories',
       type: 'array',
       of: [defineArrayMember({type: 'reference', to: {type: 'category'}})],

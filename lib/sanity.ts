@@ -52,6 +52,7 @@ export async function getPostBySlug(slug: string) {
     slug,
     publishedAt,
     mainImage,
+    showMainImageAtTop,
     body,
     excerpt,
     "author": author->{name, image, bio, "slug": slug.current},

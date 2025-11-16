@@ -50,6 +50,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
     return <p>記事が見つかりませんでした。</p>
   }
 
+  const shouldShowMainImage = post.showMainImageAtTop !== false
+
   return (
     <main className="max-w-3xl mx-auto py-10 px-4">
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
@@ -87,7 +89,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
           <p className="text-gray-500 text-sm">公開日：{new Date(post.publishedAt).toLocaleDateString()}</p>
         </div>
       </div>
-      {post.mainImage && (
+      {post.mainImage && shouldShowMainImage && (
         <Image
           src={urlFor(post.mainImage).url()}
           alt={post.title}
