@@ -156,12 +156,6 @@ export default async function PostPage({ params }: { params: { slug: string } })
         ))}
       </nav>
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
-      {description && (
-        <div className="mb-6 p-4 bg-orange-50 border border-orange-100 rounded-lg">
-          <p className="text-sm font-semibold text-orange-700 mb-1">この記事の要約</p>
-          <p className="text-gray-800 text-base leading-relaxed">{description}</p>
-        </div>
-      )}
       <div className="flex items-center text-gray-500 text-sm mb-4">
         {post.author?.slug && (
           <Link href={`/authors/${post.author.slug}`} className="mr-2">
