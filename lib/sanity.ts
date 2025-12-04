@@ -57,7 +57,8 @@ export async function getPostBySlug(slug: string) {
     excerpt,
     "author": author->{name, image, bio, "slug": slug.current},
     "categories": categories[]->{title, slug},
-    "tags": tags[]->{name, slug}
+    "tags": tags[]->{name, slug},
+    faq[]{question, answer}
   }`
   return await client.fetch(query, { slug }, { next: { tags: ['posts', `post:${slug}`] } })
 }
@@ -143,4 +144,20 @@ export async function getAllAuthors() {
     "slug": slug.current
   }`
   return await client.fetch(query, {}, { next: { tags: ['authors'] } })
+}
+
+export async function getRelatedPosts(slug: string, categorySlugs: string[] = [], tagSlugs: string[] = [], limit = 4) {
+  const query = `*[_type == "post" && slug.current != $slug && (
+      count((categories[]->slug.current)[@ in $categorySlugs]) > 0 ||
+      count((tags[]->slug.current)[@ in $tagSlugs]) > 0
+    )] | order(publishedAt desc)[0...$limit]{
+      _id,
+      title,
+      slug,
+      publishedAt,
+      excerpt,
+      mainImage
+    }`
+
+  return await client.fetch(query, { slug, categorySlugs, tagSlugs, limit }, { next: { tags: ['posts'] } })
 }

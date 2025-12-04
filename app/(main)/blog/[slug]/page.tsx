@@ -1,4 +1,4 @@
-import { getPostBySlug, urlFor } from '@/lib/sanity'
+import { getPostBySlug, getRelatedPosts, urlFor } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -68,6 +68,12 @@ export default async function PostPage({ params }: { params: { slug: string } })
   const ogImage = post.mainImage ? urlFor(post.mainImage).width(1200).height(630).url() : defaultOgImage
   const canonicalPath = `/blog/${post.slug.current}`
   const pageUrl = new URL(canonicalPath, siteUrl).toString()
+  const categorySlugs = post.categories?.map((c: any) => c.slug.current) || []
+  const tagSlugs = post.tags?.map((t: any) => t.slug.current) || []
+  const keywords = post.tags?.map((t: any) => t.name) || []
+  const articleSection = post.categories?.[0]?.title
+  const relatedPosts = await getRelatedPosts(post.slug.current, categorySlugs, tagSlugs)
+  const faqs = (post.faq || []).filter((item: any) => item?.question && item?.answer)
 
   const breadcrumbs = [
     { name: 'ホーム', href: '/' },
@@ -90,6 +96,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
     datePublished: post.publishedAt,
     dateModified: post.publishedAt,
     mainEntityOfPage: pageUrl,
+    articleSection,
+    keywords,
     author: post.author?.name
       ? {
           '@type': 'Person',
@@ -118,6 +126,25 @@ export default async function PostPage({ params }: { params: { slug: string } })
     })),
   }
 
+  const faqJsonLd = faqs.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((faq: any) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer,
+          },
+        })),
+      }
+    : null
+
+  const jsonLdEntities = (faqJsonLd
+    ? [jsonLd, breadcrumbList, faqJsonLd]
+    : [jsonLd, breadcrumbList]) as any[]
+
   return (
     <main className="max-w-3xl mx-auto py-10 px-4">
       <nav aria-label="パンくずリスト" className="text-sm text-gray-500 mb-4 flex flex-wrap gap-1">
@@ -129,6 +156,12 @@ export default async function PostPage({ params }: { params: { slug: string } })
         ))}
       </nav>
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
+      {description && (
+        <div className="mb-6 p-4 bg-orange-50 border border-orange-100 rounded-lg">
+          <p className="text-sm font-semibold text-orange-700 mb-1">この記事の要約</p>
+          <p className="text-gray-800 text-base leading-relaxed">{description}</p>
+        </div>
+      )}
       <div className="flex items-center text-gray-500 text-sm mb-4">
         {post.author?.slug && (
           <Link href={`/authors/${post.author.slug}`} className="mr-2">
@@ -175,7 +208,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
       <article className="text-gray-800 leading-relaxed">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, breadcrumbList]) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdEntities) }}
         />
         <PortableText
           value={post.body}
@@ -258,6 +291,20 @@ export default async function PostPage({ params }: { params: { slug: string } })
         />
       </article>
 
+      {faqs.length > 0 && (
+        <section className="mt-10 bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">よくある質問</h2>
+          <div className="space-y-4">
+            {faqs.map((faq: any, index: number) => (
+              <div key={index} className="p-4 bg-white rounded border border-gray-200 shadow-sm">
+                <p className="font-semibold text-gray-900">Q. {faq.question}</p>
+                <p className="mt-2 text-gray-700 leading-relaxed">A. {faq.answer}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {post.categories && post.categories.length > 0 && (
         <div className="mt-10">
           <div className="flex items-center flex-wrap gap-2">
@@ -321,6 +368,41 @@ export default async function PostPage({ params }: { params: { slug: string } })
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.815c-3.238 0-5.185 1.237-5.185 5.007v2.993z"/></svg>
         </a>
       </div>
+
+      {relatedPosts.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">関連記事</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedPosts.map((related: any) => {
+              const relatedUrl = `/blog/${related.slug.current}`
+              return (
+                <Link key={related._id} href={relatedUrl} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition block">
+                  {related.mainImage && (
+                    <Image
+                      src={urlFor(related.mainImage).width(600).height(320).url()}
+                      alt={related.title}
+                      width={600}
+                      height={320}
+                      className="object-cover w-full h-40"
+                    />
+                  )}
+                  <div className="p-4">
+                    <p className="text-gray-500 text-xs">
+                      {related.publishedAt
+                        ? new Date(related.publishedAt).toLocaleDateString('ja-JP', {
+                            year: 'numeric', month: 'short', day: 'numeric'
+                          })
+                        : '日付未設定'}
+                    </p>
+                    <h3 className="text-base font-semibold mt-1 line-clamp-2">{related.title}</h3>
+                    {related.excerpt && <p className="text-sm text-gray-600 mt-2 line-clamp-2">{related.excerpt}</p>}
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       <div className="mt-10 p-6 bg-gray-100 rounded-lg text-center">
         <h2 className="text-2xl font-bold mb-4">ビットコインの最新ニュースを、日本語で、わかりやすくお届け。</h2>
