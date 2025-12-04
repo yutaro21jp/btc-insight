@@ -13,7 +13,7 @@ export default function Footer() {
             <Link href="https://diamondhandscommunity.substack.com/t/btc-insight" className="text-gray-500 hover:text-gray-900" target="_blank" rel="noopener noreferrer">ニュースレター</Link>
           </nav>
           <div className="text-sm text-gray-500 order-2 md:order-1 text-center md:text-left">
-            &copy; {new Date().getFullYear()} BTCインサイト. All rights reserved.
+            &copy; {new Date().getFullYear()} <Link href="/" className="hover:underline">BTCインサイト</Link>. All rights reserved.
           </div>
         </div>
       </div>
