@@ -148,12 +148,19 @@ export default async function PostPage({ params }: { params: { slug: string } })
   return (
     <main className="max-w-3xl mx-auto py-10 px-4">
       <nav aria-label="パンくずリスト" className="text-sm text-gray-500 mb-4 flex flex-wrap gap-1">
-        {breadcrumbs.map((crumb, idx) => (
-          <span key={crumb.href} className="flex items-center gap-1">
-            <Link href={crumb.href} className="hover:underline">{crumb.name}</Link>
-            {idx < breadcrumbs.length - 1 && <span aria-hidden="true">/</span>}
-          </span>
-        ))}
+        {breadcrumbs.map((crumb, idx) => {
+          const isLast = idx === breadcrumbs.length - 1
+          return (
+            <span key={crumb.href} className="flex items-center gap-1">
+              {isLast ? (
+                <span className="inline-flex w-2 h-2 rounded-full bg-gray-400" aria-label="現在地" />
+              ) : (
+                <Link href={crumb.href} className="hover:underline">{crumb.name}</Link>
+              )}
+              {!isLast && <span aria-hidden="true">/</span>}
+            </span>
+          )
+        })}
       </nav>
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
       <div className="flex items-center text-gray-500 text-sm mb-4">
