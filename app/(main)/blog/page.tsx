@@ -1,25 +1,33 @@
 
-import { getPosts, urlFor } from '@/lib/sanity'
+import { getAllCategories, getAllTags, getPosts, urlFor } from '@/lib/sanity'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Metadata } from 'next'
 
 export const revalidate = 60 // ISRで1分更新
 
+const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+const defaultOgImage = new URL('/no-image.png', siteUrl).toString()
+
 export const metadata: Metadata = {
   title: 'ブログ | BTCインサイト',
   description: 'BTCインサイトの最新ブログ記事一覧',
+  alternates: {
+    canonical: '/blog',
+  },
   openGraph: {
     title: 'ブログ | BTCインサイト',
     description: 'BTCインサイトの最新ブログ記事一覧',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/blog`,
+    url: new URL('/blog', siteUrl).toString(),
     siteName: 'BTCインサイト',
+    images: [defaultOgImage],
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'ブログ | BTCインサイト',
     description: 'BTCインサイトの最新ブログ記事一覧',
+    images: [defaultOgImage],
   },
 };
 
@@ -38,7 +46,11 @@ type Post = {
 }
 
 export default async function BlogPage() {
-  const posts: Post[] = await getPosts()
+  const [posts, categories, tags]: [Post[], any[], any[]] = await Promise.all([
+    getPosts(),
+    getAllCategories(),
+    getAllTags(),
+  ])
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-8">
@@ -75,9 +87,35 @@ export default async function BlogPage() {
           </div>
         </div>
         <aside className="lg:col-span-1 lg:sticky top-8 h-fit">
-          <div className="bg-gray-100 p-6 rounded-lg">
-            <h2 className="text-xl font-bold mb-4">お知らせ</h2>
-            <p>ここに告知内容が入ります。</p>
+          <div className="bg-gray-100 p-6 rounded-lg space-y-6">
+            <div>
+              <h2 className="text-xl font-bold mb-3">カテゴリ</h2>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <Link
+                    key={category.slug}
+                    href={`/categories/${category.slug}`}
+                    className="bg-white border px-3 py-1 rounded-full text-sm text-gray-700 hover:border-orange-400 transition"
+                  >
+                    {category.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold mb-3">タグ</h2>
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <Link
+                    key={tag.slug}
+                    href={`/tags/${tag.slug}`}
+                    className="bg-white border px-3 py-1 rounded-full text-sm text-gray-700 hover:border-orange-400 transition"
+                  >
+                    {tag.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </aside>
       </div>

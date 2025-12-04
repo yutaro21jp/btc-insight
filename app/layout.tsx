@@ -1,23 +1,31 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
+const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+const defaultTitle = 'BTCインサイト';
+const defaultDescription = 'ビットコインの最新ニュースを日本語で、わかりやすく。';
+const defaultOgImage = new URL('/no-image.png', siteUrl).toString();
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
-  title: 'BTCインサイト',
-  description: 'ビットコインの最新ニュースを日本語で、わかりやすく。',
+  metadataBase: new URL(siteUrl),
+  title: defaultTitle,
+  description: defaultDescription,
   icons: {
     icon: '/btc-insight-logo.png',
   },
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'BTCインサイト',
-    description: 'ビットコインの最新ニュースを日本語で、わかりやすく。',
-    url: process.env.NEXT_PUBLIC_BASE_URL || '/',
-    siteName: 'BTCインサイト',
+    title: defaultTitle,
+    description: defaultDescription,
+    url: siteUrl,
+    siteName: defaultTitle,
     images: [
       {
-        url: '/no-image.png',
-        width: 800,
-        height: 600,
+        url: defaultOgImage,
+        width: 1200,
+        height: 630,
         alt: 'BTCインサイト ロゴ',
       },
     ],
@@ -26,9 +34,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BTCインサイト',
-    description: 'ビットコインの最新ニュースを日本語で、わかりやすく。',
-    images: ['/no-image.png'],
+    title: defaultTitle,
+    description: defaultDescription,
+    images: [defaultOgImage],
   },
 };
 

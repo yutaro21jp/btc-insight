@@ -5,6 +5,9 @@ import { Metadata } from 'next'
 
 export const revalidate = 60 // ISRで1分更新
 
+const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+const defaultOgImage = new URL('/no-image.png', siteUrl).toString()
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const tagSlug = params.slug
   const tag = await getTagBySlug(tagSlug)
@@ -21,17 +24,22 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title: pageTitle,
     description: `${tag.name}のブログ記事`,
+    alternates: {
+      canonical: `/tags/${tag.slug}`,
+    },
     openGraph: {
       title: pageTitle,
       description: `${tag.name}のブログ記事`,
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/tags/${tag.slug.current}`,
+      url: new URL(`/tags/${tag.slug}`, siteUrl).toString(),
       siteName: siteName,
+      images: [defaultOgImage],
       type: 'website',
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: pageTitle,
       description: `${tag.name}のブログ記事`,
+      images: [defaultOgImage],
     },
   }
 }

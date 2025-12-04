@@ -120,3 +120,27 @@ export async function getPostsByTagSlug(tagSlug: string) {
   }`
   return await client.fetch(query, { tagSlug }, { next: { tags: ['posts', `tag:${tagSlug}`] } })
 }
+
+export async function getAllCategories() {
+  const query = `*[_type == "category"]{
+    title,
+    "slug": slug.current
+  }`
+  return await client.fetch(query, {}, { next: { tags: ['categories'] } })
+}
+
+export async function getAllTags() {
+  const query = `*[_type == "tag"]{
+    name,
+    "slug": slug.current
+  }`
+  return await client.fetch(query, {}, { next: { tags: ['tags'] } })
+}
+
+export async function getAllAuthors() {
+  const query = `*[_type == "author"]{
+    name,
+    "slug": slug.current
+  }`
+  return await client.fetch(query, {}, { next: { tags: ['authors'] } })
+}

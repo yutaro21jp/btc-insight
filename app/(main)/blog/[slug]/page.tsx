@@ -5,6 +5,18 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 import { Tweet } from 'react-tweet'
 
+const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+const defaultOgImage = new URL('/no-image.png', siteUrl).toString()
+
+const extractSummary = (post: any, maxLength = 140) => {
+  if (post?.excerpt) return post.excerpt
+  const firstBlock = post?.body?.find((block: any) => block._type === 'block')
+  if (!firstBlock?.children?.length) return undefined
+  const text = firstBlock.children.map((child: any) => child.text || '').join('')
+  if (!text) return undefined
+  return text.length > maxLength ? `${text.slice(0, maxLength)}…` : text
+}
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = await getPostBySlug(params.slug)
 
@@ -16,24 +28,30 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   const siteName = 'BTCインサイト';
   const pageTitle = `${post.title} | ${siteName}`;
+  const description = extractSummary(post)
 
-  const ogImage = post.mainImage ? urlFor(post.mainImage).width(1200).height(630).url() : undefined
+  const ogImage = post.mainImage ? urlFor(post.mainImage).width(1200).height(630).url() : defaultOgImage
+  const canonical = `/blog/${post.slug.current}`
+  const absoluteUrl = new URL(canonical, siteUrl).toString()
 
   return {
     title: pageTitle,
-    description: post.excerpt,
+    description,
+    alternates: {
+      canonical,
+    },
     openGraph: {
       title: pageTitle,
-      description: post.excerpt,
+      description,
       type: 'article',
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/blog/${post.slug.current}`,
+      url: absoluteUrl,
       images: ogImage ? [{ url: ogImage }] : [],
     },
     twitter: {
       card: 'summary_large_image',
       title: pageTitle,
-      description: post.excerpt,
-      images: ogImage ? [ogImage] : [],
+      description,
+      images: ogImage ? [ogImage] : [defaultOgImage],
     },
   }
 }
@@ -41,19 +59,75 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function PostPage({ params }: { params: { slug: string } }) {
   const post = await getPostBySlug(params.slug)
 
-  console.log("post.mainImage data:", JSON.stringify(post?.mainImage, null, 2));
-  if (post?.mainImage) {
-    console.log("Generated Image URL:", urlFor(post.mainImage).url());
-  }
-
   if (!post) {
     return <p>記事が見つかりませんでした。</p>
   }
 
   const shouldShowMainImage = post.showMainImageAtTop !== false
+  const description = extractSummary(post, 160)
+  const ogImage = post.mainImage ? urlFor(post.mainImage).width(1200).height(630).url() : defaultOgImage
+  const canonicalPath = `/blog/${post.slug.current}`
+  const pageUrl = new URL(canonicalPath, siteUrl).toString()
+
+  const breadcrumbs = [
+    { name: 'ホーム', href: '/' },
+    { name: 'ブログ', href: '/blog' },
+  ]
+
+  if (post.categories?.length) {
+    const primaryCategory = post.categories[0]
+    breadcrumbs.push({ name: primaryCategory.title, href: `/categories/${primaryCategory.slug.current}` })
+  }
+
+  breadcrumbs.push({ name: post.title, href: canonicalPath })
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description,
+    image: ogImage,
+    datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    mainEntityOfPage: pageUrl,
+    author: post.author?.name
+      ? {
+          '@type': 'Person',
+          name: post.author.name,
+          url: post.author?.slug ? new URL(`/authors/${post.author.slug}`, siteUrl).toString() : undefined,
+        }
+      : undefined,
+    publisher: {
+      '@type': 'Organization',
+      name: 'BTCインサイト',
+      logo: {
+        '@type': 'ImageObject',
+        url: new URL('/btc-insight-logo.png', siteUrl).toString(),
+      },
+    },
+  }
+
+  const breadcrumbList = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.name,
+      item: new URL(crumb.href, siteUrl).toString(),
+    })),
+  }
 
   return (
     <main className="max-w-3xl mx-auto py-10 px-4">
+      <nav aria-label="パンくずリスト" className="text-sm text-gray-500 mb-4 flex flex-wrap gap-1">
+        {breadcrumbs.map((crumb, idx) => (
+          <span key={crumb.href} className="flex items-center gap-1">
+            <Link href={crumb.href} className="hover:underline">{crumb.name}</Link>
+            {idx < breadcrumbs.length - 1 && <span aria-hidden="true">/</span>}
+          </span>
+        ))}
+      </nav>
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
       <div className="flex items-center text-gray-500 text-sm mb-4">
         {post.author?.slug && (
@@ -99,13 +173,17 @@ export default async function PostPage({ params }: { params: { slug: string } })
         />
       )}
       <article className="text-gray-800 leading-relaxed">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, breadcrumbList]) }}
+        />
         <PortableText
           value={post.body}
           components={{
             block: {
-              h1: ({children}) => <h1 className="text-4xl font-extrabold mt-8 mb-4">{children}</h1>,
-              h2: ({children}) => <h2 className="border-l-4 border-orange-500 pl-4 text-2xl font-bold my-8 border-b-2 border-orange-400 pb-2">{children}</h2>,
-              h3: ({children}) => <h3 className="border-b-2 border-orange-400 pb-2 text-xl font-bold my-6">{children}</h3>,
+              h1: ({children}) => <h2 className="border-l-4 border-orange-500 pl-4 text-2xl font-bold my-8 border-b-2 border-orange-400 pb-2">{children}</h2>,
+              h2: ({children}) => <h3 className="border-b-2 border-orange-400 pb-2 text-xl font-bold my-6">{children}</h3>,
+              h3: ({children}) => <h4 className="text-lg font-bold text-orange-600 my-4">{children}</h4>,
               h4: ({children}) => <h4 className="text-lg font-bold text-orange-600 my-4">{children}</h4>,
               h5: ({children}) => <h5 className="text-lg font-semibold mt-3 mb-1">{children}</h5>,
               h6: ({children}) => <h6 className="text-base font-semibold mt-2 mb-1">{children}</h6>,
@@ -216,7 +294,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
       <div className="mt-6 flex gap-2">
         <a
-          href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(process.env.NEXT_PUBLIC_BASE_URL + '/blog/' + post.slug.current)}&text=${encodeURIComponent(post.title)}`}
+          href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(post.title)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="bg-black hover:bg-gray-800 text-white font-bold p-2 rounded-lg flex items-center justify-center w-10 h-10"
@@ -225,7 +303,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.84-6.317-6.109 6.317H.727l8.49-9.71L0 1.154h7.594l4.95 5.359L18.901 1.153zm-.742 19.14L6.67 3.08H4.41l13.17 17.19h2.26z"></path></svg>
         </a>
         <a
-          href={`https://bsky.app/intent/compose?text=${encodeURIComponent(`${post.title} ${process.env.NEXT_PUBLIC_BASE_URL}/blog/${post.slug.current}`)}`}
+          href={`https://bsky.app/intent/compose?text=${encodeURIComponent(`${post.title} ${pageUrl}`)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold p-2 rounded-lg flex items-center justify-center w-10 h-10"
@@ -234,7 +312,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="-50 -70 430 390" fill="currentColor"><path d="M180 141.964C163.699 110.262 119.308 51.1817 78.0347 22.044C38.4971 -5.86834 23.414 -1.03207 13.526 3.43594C2.08093 8.60755 0 26.1785 0 36.5164C0 46.8542 5.66748 121.272 9.36416 133.694C21.5786 174.738 65.0603 188.607 105.104 184.156C107.151 183.852 109.227 183.572 111.329 183.312C109.267 183.642 107.19 183.924 105.104 184.156C46.4204 192.847 -5.69621 214.233 62.6582 290.33C137.848 368.18 165.705 273.637 180 225.702C194.295 273.637 210.76 364.771 295.995 290.33C360 225.702 313.58 192.85 254.896 184.158C252.81 183.926 250.733 183.645 248.671 183.315C250.773 183.574 252.849 183.855 254.896 184.158C294.94 188.61 338.421 174.74 350.636 133.697C354.333 121.275 360 46.8568 360 36.519C360 26.1811 357.919 8.61012 346.474 3.43851C336.586 -1.02949 321.503 -5.86576 281.965 22.0466C240.692 51.1843 196.301 110.262 180 141.964Z"/></svg>
         </a>
         <a
-          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(process.env.NEXT_PUBLIC_BASE_URL + '/blog/' + post.slug.current)}`}
+          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 rounded-lg flex items-center justify-center w-10 h-10"
