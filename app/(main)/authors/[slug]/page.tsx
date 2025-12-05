@@ -125,83 +125,83 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
       <h1 className="text-4xl font-extrabold my-8 text-center text-gray-800">
         執筆者：{author.name}
       </h1>
-      <div className="max-w-3xl mx-auto bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-        <div className="flex flex-col md:flex-row md:items-center gap-4">
-          {author.image && (
-            <Image
-              src={urlFor(author.image).width(200).height(200).fit('crop').url()}
-              alt={author.name}
-              width={200}
-              height={200}
-              className="rounded-full object-cover w-24 h-24 md:w-28 md:h-28"
-            />
-          )}
-          <div className="flex-1 space-y-2">
-            {hasProfileMeta && (
-              <p className="text-sm text-gray-600">
-                {author.title && <span>{author.title}</span>}
-                {author.organization && <span className="ml-2 text-gray-500">({author.organization})</span>}
-                {author.location && <span className="ml-2 text-gray-500">@{author.location}</span>}
-              </p>
-            )}
-            {author.bio && (
-              <div className="prose prose-sm max-w-none text-gray-800">
-                <PortableText
-                  value={author.bio}
-                  components={{
-                    block: {
-                      normal: ({ children }) => <p className="mb-2">{children}</p>,
-                    },
-                  }}
-                />
-              </div>
-            )}
-            {author.expertise?.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {author.expertise.map((item: string, idx: number) => (
-                  <span key={idx} className="bg-orange-50 text-orange-700 border border-orange-200 px-3 py-1 rounded-full text-xs">
-                    {item}
-                  </span>
-                ))}
-              </div>
-            )}
-            {socialLinks.length > 0 && (
-              <div className="flex gap-3 pt-1">
-                {socialLinks.map((link) => (
-                  <a key={link.type} href={link.href} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900" aria-label={link.name}>
-                    <SocialIcon type={link.type} />
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-        {author.achievements?.length > 0 && (
-          <div className="mt-4">
-            <h2 className="text-sm font-semibold text-gray-700 mb-2">実績・ハイライト</h2>
-            <ul className="list-disc list-inside text-gray-800 space-y-1">
-              {author.achievements.map((item: string, idx: number) => (
-                <li key={idx}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {author.credentials?.length > 0 && (
-          <div className="mt-3">
-            <h2 className="text-sm font-semibold text-gray-700 mb-2">資格・肩書き</h2>
-            <div className="flex flex-wrap gap-2">
-              {author.credentials.map((item: string, idx: number) => (
-                <span key={idx} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-8">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              {author.image && (
+                <Image
+                  src={urlFor(author.image).width(200).height(200).fit('crop').url()}
+                  alt={author.name}
+                  width={200}
+                  height={200}
+                  className="rounded-full object-cover w-24 h-24 md:w-28 md:h-28"
+                />
+              )}
+              <div className="flex-1 space-y-2">
+                {hasProfileMeta && (
+                  <p className="text-sm text-gray-600">
+                    {author.title && <span>{author.title}</span>}
+                    {author.organization && <span className="ml-2 text-gray-500">({author.organization})</span>}
+                    {author.location && <span className="ml-2 text-gray-500">@{author.location}</span>}
+                  </p>
+                )}
+                {author.bio && (
+                  <div className="prose prose-sm max-w-none text-gray-800">
+                    <PortableText
+                      value={author.bio}
+                      components={{
+                        block: {
+                          normal: ({ children }) => <p className="mb-2">{children}</p>,
+                        },
+                      }}
+                    />
+                  </div>
+                )}
+                {author.expertise?.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {author.expertise.map((item: string, idx: number) => (
+                      <span key={idx} className="bg-orange-50 text-orange-700 border border-orange-200 px-3 py-1 rounded-full text-xs">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {socialLinks.length > 0 && (
+                  <div className="flex gap-3 pt-1">
+                    {socialLinks.map((link) => (
+                      <a key={link.type} href={link.href} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900" aria-label={link.name}>
+                        <SocialIcon type={link.type} />
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            {author.achievements?.length > 0 && (
+              <div className="mt-4">
+                <h2 className="text-sm font-semibold text-gray-700 mb-2">実績・ハイライト</h2>
+                <ul className="list-disc list-inside text-gray-800 space-y-1">
+                  {author.achievements.map((item: string, idx: number) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {author.credentials?.length > 0 && (
+              <div className="mt-3">
+                <h2 className="text-sm font-semibold text-gray-700 mb-2">資格・肩書き</h2>
+                <div className="flex flex-wrap gap-2">
+                  {author.credentials.map((item: string, idx: number) => (
+                    <span key={idx} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
           {posts.length === 0 ? (
             <p className="text-center text-gray-600">この執筆者の記事はまだありません。</p>
