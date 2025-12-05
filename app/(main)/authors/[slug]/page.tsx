@@ -84,7 +84,9 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
   const buildNostrUrl = (val: string) => {
     if (!val) return null
     if (val.startsWith('http')) return val
-    return `https://primal.net/${val}`
+    if (/^npub/i.test(val)) return `https://primal.net/p/${val}`
+    const handle = val.replace(/^@/, '')
+    return `https://primal.net/${handle}`
   }
 
   const socialLinks = [
@@ -102,8 +104,11 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
     }
     if (type === 'nostr') {
       return (
-        <svg className="w-5 h-5" viewBox="0 0 64 64" fill="currentColor">
-          <path d="M21 12.5c-4.4 0-8 3.6-8 8 0 2.8 1.5 5.2 3.7 6.7a16.7 16.7 0 0 0-5.7 12.6c0 2.1 1.7 3.8 3.8 3.8h1.4c1 0 1.8-.8 1.8-1.8V30.3c.9.3 1.9.4 2.9.4 4.4 0 8-3.6 8-8s-3.6-8-8-8Zm22 0c-4.4 0-8 3.6-8 8 0 4.4 3.6 8 8 8 .7 0 1.4-.1 2.1-.2v11.5l-6.3-4.2c-.7-.5-1.6-.5-2.3 0l-6.3 4.2c-.9.6-1.2 1.8-.6 2.7.6.9 1.8 1.2 2.7.6l5.2-3.5 5.2 3.5c1.8 1.2 4.2-.1 4.2-2.3V24.7c.7.1 1.4.3 2.1.3 4.4 0 8-3.6 8-8s-3.6-8-8-8-8 3.6-8 8c0 .7.1 1.4.3 2.1-.7-.1-1.4-.3-2.1-.3-4.4 0-8 3.6-8 8 0 2.5 1.1 4.7 2.9 6.1v11.7c0 1 1.5 1.7 2.4 1.1l7.5-5 7.5 5c1.5 1 3.4-.1 3.4-1.9V26.6c2-1.5 3.3-3.9 3.3-6.6 0-4.4-3.6-8-8-8Z" />
+        <svg className="w-5 h-5" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="24" cy="22" r="10" fill="currentColor" />
+          <path d="M50 20c-2 0-4 1.2-5 3l-5 9-8 4" />
+          <path d="M32 32c-10 0-18 8-18 18v8h36v-8c0-8-4.5-14.8-11.5-17.4" />
+          <path d="M49 18l9 2-9 5" fill="currentColor" />
         </svg>
       )
     }
