@@ -52,8 +52,31 @@ export default async function BlogPage() {
     getAllTags(),
   ])
 
+  const breadcrumbList = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'ホーム',
+        item: new URL('/', siteUrl).toString(),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'ブログ',
+        item: new URL('/blog', siteUrl).toString(),
+      },
+    ],
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 pt-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbList) }}
+      />
       <h1 className="text-4xl font-extrabold my-8 text-center text-gray-800">
         ブログ
       </h1>

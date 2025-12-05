@@ -67,8 +67,37 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
     return <p>タグが見つかりませんでした。</p>
   }
 
+  const breadcrumbList = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'ホーム',
+        item: new URL('/', siteUrl).toString(),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'ブログ',
+        item: new URL('/blog', siteUrl).toString(),
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: tag.name,
+        item: new URL(`/tags/${tag.slug}`, siteUrl).toString(),
+      },
+    ],
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 pt-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbList) }}
+      />
       <h1 className="text-4xl font-extrabold my-8 text-center text-gray-800">
         {tag.name}
       </h1>
