@@ -55,7 +55,7 @@ export async function getPostBySlug(slug: string) {
     showMainImageAtTop,
     body,
     excerpt,
-    "author": author->{name, image, bio, "slug": slug.current},
+    "author": author->{name, title, organization, location, image, bio, expertise, achievements, credentials, socialLinks, "slug": slug.current},
     "categories": categories[]->{title, slug},
     "tags": tags[]->{name, slug},
     faq[]{question, answer}
@@ -66,8 +66,15 @@ export async function getPostBySlug(slug: string) {
 export async function getAuthorBySlug(authorSlug: string) {
   const query = `*[_type == "author" && slug.current == $authorSlug][0]{
     name,
+    title,
+    organization,
+    location,
     image,
     bio,
+    expertise,
+    achievements,
+    credentials,
+    socialLinks,
     "slug": slug.current
   }`
   return await client.fetch(query, { authorSlug }, { next: { tags: [`author:${authorSlug}`] } })

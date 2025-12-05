@@ -145,6 +145,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
     ? [jsonLd, breadcrumbList, faqJsonLd]
     : [jsonLd, breadcrumbList]) as any[]
 
+  const authorTitleLine = [post.author?.title, post.author?.organization].filter(Boolean).join(' / ')
+
   return (
     <main className="max-w-3xl mx-auto py-10 px-4">
       <nav aria-label="パンくずリスト" className="text-sm text-gray-500 mb-4 flex flex-wrap gap-1">
@@ -193,6 +195,9 @@ export default async function PostPage({ params }: { params: { slug: string } })
             ) : (
               <p className="text-gray-800 font-semibold">{post.author.name}</p>
             )
+          )}
+          {authorTitleLine && (
+            <p className="text-gray-500 text-xs">{authorTitleLine}</p>
           )}
           <p className="text-gray-500 text-sm">公開日：{new Date(post.publishedAt).toLocaleDateString()}</p>
         </div>
