@@ -51,6 +51,23 @@ export const authorType = defineType({
           type: 'block',
           styles: [{title: 'Normal', value: 'normal'}],
           lists: [],
+          marks: {
+            decorators: [
+              {title: 'Strong', value: 'strong'},
+              {title: 'Emphasis', value: 'em'},
+            ],
+            annotations: [
+              {
+                title: 'URL',
+                name: 'link',
+                type: 'object',
+                fields: [
+                  {title: 'URL', name: 'href', type: 'url'},
+                  {title: 'Open in new tab', name: 'blank', type: 'boolean', initialValue: false},
+                ],
+              },
+            ],
+          },
         }),
       ],
       description: '150-300文字程度の略歴',

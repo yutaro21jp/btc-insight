@@ -155,6 +155,17 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
                         block: {
                           normal: ({ children }) => <p className="mb-2">{children}</p>,
                         },
+                        marks: {
+                          link: ({ children, value }) => {
+                            const rel = value.blank ? 'noreferrer noopener' : undefined
+                            const target = value.blank ? '_blank' : undefined
+                            return (
+                              <a href={value.href} rel={rel} target={target} className="text-blue-600 hover:underline">
+                                {children}
+                              </a>
+                            )
+                          },
+                        },
                       }}
                     />
                   </div>
