@@ -68,15 +68,31 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
     return <p>執筆者が見つかりませんでした。</p>
   }
 
+  const buildXUrl = (val: string) => {
+    if (!val) return null
+    if (val.startsWith('http')) return val
+    const handle = val.replace(/^@/, '')
+    return `https://x.com/${handle}`
+  }
+
+  const buildGithubUrl = (val: string) => {
+    if (!val) return null
+    if (val.startsWith('http')) return val
+    return `https://github.com/${val}`
+  }
+
+  const buildNostrUrl = (val: string) => {
+    if (!val) return null
+    if (val.startsWith('http')) return val
+    return `https://primal.net/${val}`
+  }
+
   const socialLinks = [
-    author.socialLinks?.x && { name: 'X', href: author.socialLinks.x, type: 'x' },
-    author.socialLinks?.github && { name: 'GitHub', href: author.socialLinks.github, type: 'github' },
-    author.socialLinks?.nostr && {
-      name: 'Nostr',
-      href: author.socialLinks.nostr.startsWith('http') ? author.socialLinks.nostr : `https://njump.me/${author.socialLinks.nostr}`,
-      type: 'nostr',
-    },
-  ].filter(Boolean) as { name: string; href: string; type: 'x' | 'github' | 'nostr' }[]
+    author.socialLinks?.nostr && { name: 'Nostr', href: buildNostrUrl(author.socialLinks.nostr), type: 'nostr' as const },
+    author.socialLinks?.x && { name: 'X', href: buildXUrl(author.socialLinks.x), type: 'x' as const },
+    author.socialLinks?.github && { name: 'GitHub', href: buildGithubUrl(author.socialLinks.github), type: 'github' as const },
+  ]
+    .filter((item): item is { name: string; href: string; type: 'nostr' | 'x' | 'github' } => Boolean(item && item.href))
 
   const hasProfileMeta = author.title || author.organization || author.location
 
@@ -85,7 +101,11 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
       return <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.43 7.86 10.96.58.1.79-.25.79-.56v-2.08c-3.2.7-3.87-1.37-3.87-1.37-.52-1.3-1.26-1.65-1.26-1.65-1.03-.7.08-.68.08-.68 1.14.08 1.74 1.17 1.74 1.17 1.02 1.74 2.68 1.23 3.33.94.1-.74.4-1.23.72-1.52-2.56-.3-5.25-1.28-5.25-5.7 0-1.26.45-2.3 1.17-3.12-.12-.29-.51-1.46.11-3.03 0 0 .96-.31 3.15 1.19a10.97 10.97 0 0 1 5.74 0c2.2-1.5 3.15-1.19 3.15-1.19.62 1.57.23 2.74.11 3.03.73.82 1.17 1.86 1.17 3.12 0 4.44-2.7 5.39-5.27 5.68.41.35.77 1.03.77 2.07v3.07c0 .31.2.67.8.55A10.99 10.99 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
     }
     if (type === 'nostr') {
-      return <svg className="w-5 h-5" viewBox="0 0 64 64" fill="currentColor"><path d="M32 4 8 16v16c0 12.9 8.6 24.8 24 28 15.4-3.2 24-15.1 24-28V16L32 4Zm0 8 16 8v12c0 8.9-5.6 17.2-16 19.8C21.6 49.2 16 40.9 16 32V20l16-8Zm-6 11c-1.1 0-2 .9-2 2v6c0 1.7 1.3 3 3 3h10c1.7 0 3-1.3 3-3v-6c0-1.1-.9-2-2-2H26Zm2 4h8v4h-8v-4Z"/></svg>
+      return (
+        <svg className="w-5 h-5" viewBox="0 0 64 64" fill="currentColor">
+          <path d="M21 12.5c-4.4 0-8 3.6-8 8 0 2.8 1.5 5.2 3.7 6.7a16.7 16.7 0 0 0-5.7 12.6c0 2.1 1.7 3.8 3.8 3.8h1.4c1 0 1.8-.8 1.8-1.8V30.3c.9.3 1.9.4 2.9.4 4.4 0 8-3.6 8-8s-3.6-8-8-8Zm22 0c-4.4 0-8 3.6-8 8 0 4.4 3.6 8 8 8 .7 0 1.4-.1 2.1-.2v11.5l-6.3-4.2c-.7-.5-1.6-.5-2.3 0l-6.3 4.2c-.9.6-1.2 1.8-.6 2.7.6.9 1.8 1.2 2.7.6l5.2-3.5 5.2 3.5c1.8 1.2 4.2-.1 4.2-2.3V24.7c.7.1 1.4.3 2.1.3 4.4 0 8-3.6 8-8s-3.6-8-8-8-8 3.6-8 8c0 .7.1 1.4.3 2.1-.7-.1-1.4-.3-2.1-.3-4.4 0-8 3.6-8 8 0 2.5 1.1 4.7 2.9 6.1v11.7c0 1 1.5 1.7 2.4 1.1l7.5-5 7.5 5c1.5 1 3.4-.1 3.4-1.9V26.6c2-1.5 3.3-3.9 3.3-6.6 0-4.4-3.6-8-8-8Z" />
+        </svg>
+      )
     }
     return <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.84-6.317-6.109 6.317H.727l8.49-9.71L0 1.154h7.594l4.95 5.359L18.901 1.153zm-.742 19.14L6.67 3.08H4.41l13.17 17.19h2.26z"></path></svg>
   }

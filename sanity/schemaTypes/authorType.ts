@@ -81,9 +81,9 @@ export const authorType = defineType({
       title: 'Social Links',
       type: 'object',
       fields: [
-        {name: 'nostr', title: 'Nostr (npub/URL)', type: 'string'},
-        {name: 'x', title: 'X (Twitter)', type: 'url'},
-        {name: 'github', title: 'GitHub', type: 'url'},
+        {name: 'nostr', title: 'Nostr (npub/URL)', type: 'string', description: 'npub もしくは URL'},
+        {name: 'x', title: 'X (Twitter)', type: 'string', description: 'URL または @なしのID'},
+        {name: 'github', title: 'GitHub', type: 'string', description: 'URL またはユーザーID'},
       ],
     }),
   ],
