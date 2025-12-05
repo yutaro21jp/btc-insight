@@ -86,13 +86,6 @@ export const authorType = defineType({
         {name: 'github', title: 'GitHub', type: 'url'},
       ],
     }),
-    defineField({
-      name: 'image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-    }),
   ],
   preview: {
     select: {
