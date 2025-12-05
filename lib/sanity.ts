@@ -147,17 +147,37 @@ export async function getAllAuthors() {
 }
 
 export async function getRelatedPosts(slug: string, categorySlugs: string[] = [], tagSlugs: string[] = [], limit = 4) {
-  const query = `*[_type == "post" && slug.current != $slug && (
-      count((categories[]->slug.current)[@ in $categorySlugs]) > 0 ||
-      count((tags[]->slug.current)[@ in $tagSlugs]) > 0
-    )] | order(publishedAt desc)[0...$limit]{
-      _id,
-      title,
-      slug,
-      publishedAt,
-      excerpt,
-      mainImage
-    }`
+  if (!categorySlugs.length && !tagSlugs.length) return []
 
-  return await client.fetch(query, { slug, categorySlugs, tagSlugs, limit }, { next: { tags: ['posts'] } })
+  const categoryQuery = `*[_type == "post" && slug.current != $slug && count((categories[]->slug.current)[@ in $categorySlugs]) > 0] | order(publishedAt desc)[0...$limit]{
+    _id,
+    title,
+    slug,
+    publishedAt,
+    excerpt,
+    mainImage
+  }`
+
+  const tagQuery = `*[_type == "post" && slug.current != $slug && count((tags[]->slug.current)[@ in $tagSlugs]) > 0] | order(publishedAt desc)[0...$limit]{
+    _id,
+    title,
+    slug,
+    publishedAt,
+    excerpt,
+    mainImage
+  }`
+
+  const [categoryPosts, tagPosts] = await Promise.all([
+    categorySlugs.length ? client.fetch(categoryQuery, { slug, categorySlugs, limit }, { next: { tags: ['posts'] } }) : [],
+    tagSlugs.length ? client.fetch(tagQuery, { slug, tagSlugs, limit }, { next: { tags: ['posts'] } }) : [],
+  ])
+
+  const deduped: Record<string, any> = {}
+  ;[...categoryPosts, ...tagPosts].forEach((post) => {
+    if (!deduped[post._id]) {
+      deduped[post._id] = post
+    }
+  })
+
+  return Object.values(deduped).slice(0, limit)
 }
