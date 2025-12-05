@@ -149,15 +149,6 @@ export async function getAllAuthors() {
 export async function getRelatedPosts(slug: string, categorySlugs: string[] = [], tagSlugs: string[] = [], limit = 4) {
   if (!categorySlugs.length && !tagSlugs.length) return []
 
-  const categoryQuery = `*[_type == "post" && slug.current != $slug && count((categories[]->slug.current)[@ in $categorySlugs]) > 0] | order(publishedAt desc)[0...$limit]{
-    _id,
-    title,
-    slug,
-    publishedAt,
-    excerpt,
-    mainImage
-  }`
-
   const tagQuery = `*[_type == "post" && slug.current != $slug && count((tags[]->slug.current)[@ in $tagSlugs]) > 0] | order(publishedAt desc)[0...$limit]{
     _id,
     title,
@@ -167,13 +158,23 @@ export async function getRelatedPosts(slug: string, categorySlugs: string[] = []
     mainImage
   }`
 
+  const categoryQuery = `*[_type == "post" && slug.current != $slug && count((categories[]->slug.current)[@ in $categorySlugs]) > 0] | order(publishedAt desc)[0...$limit]{
+    _id,
+    title,
+    slug,
+    publishedAt,
+    excerpt,
+    mainImage
+  }`
+
   const [categoryPosts, tagPosts] = await Promise.all([
-    categorySlugs.length ? client.fetch(categoryQuery, { slug, categorySlugs, limit }, { next: { tags: ['posts'] } }) : [],
     tagSlugs.length ? client.fetch(tagQuery, { slug, tagSlugs, limit }, { next: { tags: ['posts'] } }) : [],
+    categorySlugs.length ? client.fetch(categoryQuery, { slug, categorySlugs, limit }, { next: { tags: ['posts'] } }) : [],
   ])
 
+  // タグ一致を優先し、カテゴリで補完する
   const deduped: Record<string, any> = {}
-  ;[...categoryPosts, ...tagPosts].forEach((post) => {
+  ;[...tagPosts, ...categoryPosts].forEach((post) => {
     if (!deduped[post._id]) {
       deduped[post._id] = post
     }
