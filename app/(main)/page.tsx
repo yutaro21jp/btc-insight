@@ -37,7 +37,7 @@ export default async function HomePage() {
       <h1 className="text-xl text-center my-8">ビットコインの最新ニュースを、日本語で、わかりやすく。</h1>
       <div className="text-center mb-16">
         <Link
-          href="https://diamondhandscommunity.substack.com/t/btc-insight"
+          href="https://diamondhandscommunity.substack.com/"
           className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300"
           target="_blank"
           rel="noopener noreferrer"
