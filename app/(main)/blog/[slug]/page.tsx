@@ -222,8 +222,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
             block: {
               h1: ({children}) => <h2 className="border-l-4 border-orange-500 pl-4 text-2xl font-bold my-8 border-b-2 border-orange-400 pb-2">{children}</h2>,
               h2: ({children}) => <h3 className="border-b-2 border-orange-400 pb-2 text-xl font-bold my-6">{children}</h3>,
-              h3: ({children}) => <h4 className="text-xl font-bold text-orange-600 mt-6 mb-3 border-l-4 border-orange-300 pl-3">{children}</h4>,
-              h4: ({children}) => <h4 className="text-lg font-semibold text-gray-800 mt-4 mb-2 border-l-2 border-gray-200 pl-2">{children}</h4>,
+              h3: ({children}) => <h4 className="text-xl font-bold text-orange-600 mt-6 mb-3">{children}</h4>,
+              h4: ({children}) => <h4 className="text-lg font-semibold text-gray-800 mt-4 mb-2 border-l-2 border-b-2 border-gray-200 pl-2 pb-2">{children}</h4>,
               h5: ({children}) => <h5 className="text-lg font-semibold mt-3 mb-1">{children}</h5>,
               h6: ({children}) => <h6 className="text-base font-semibold mt-2 mb-1">{children}</h6>,
               normal: ({children}) => <p className="mb-4 text-lg">{children}</p>,
