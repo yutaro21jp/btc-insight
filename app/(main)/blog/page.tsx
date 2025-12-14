@@ -77,9 +77,6 @@ export default async function BlogPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbList) }}
       />
-      <h1 className="text-4xl font-extrabold my-8 text-center text-gray-800">
-        ブログ
-      </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
