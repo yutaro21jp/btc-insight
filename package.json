@@ -13,7 +13,7 @@
     "@sanity/icons": "^3.7.4",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.99.0",
-    "next": "^14.2.5",
+    "next": "^14.2.35",
     "next-sanity": "^9.12.3",
     "react": "^18",
     "react-dom": "^18",
@@ -27,7 +27,7 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.21",
     "eslint": "^8",
-    "eslint-config-next": "^14.2.5",
+    "eslint-config-next": "^14.2.35",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
