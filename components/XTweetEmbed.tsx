@@ -1,3 +1,6 @@
+import Script from 'next/script'
+import XTweetEmbedClient from '@/components/XTweetEmbedClient'
+
 type XTweetEmbedProps = {
   url: string
 }
@@ -12,19 +15,18 @@ export default function XTweetEmbed({ url }: XTweetEmbedProps) {
   })()
   const tweetId = url.match(/status\/(\d+)/)?.[1]
 
-  return (
-    tweetId ? (
-      <iframe
-        title="X post"
-        src={`https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&dnt=true&align=center`}
-        className="w-full max-w-[550px] h-[520px] border-0"
-        allow="encrypted-media; autoplay; fullscreen"
-        loading="lazy"
+  return tweetId ? (
+    <div className="w-full flex justify-center">
+      <Script
+        id="x-widgets"
+        src="https://platform.twitter.com/widgets.js"
+        strategy="afterInteractive"
       />
-    ) : (
-      <blockquote className="twitter-tweet">
-        <a href={canonicalUrl}>View on X</a>
-      </blockquote>
-    )
+      <XTweetEmbedClient tweetId={tweetId} />
+    </div>
+  ) : (
+    <blockquote className="twitter-tweet">
+      <a href={canonicalUrl}>View on X</a>
+    </blockquote>
   )
 }
