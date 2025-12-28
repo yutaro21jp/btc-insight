@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 type XTweetEmbedProps = {
   url: string
@@ -18,6 +18,13 @@ declare global {
 
 export default function XTweetEmbed({ url }: XTweetEmbedProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const canonicalUrl = useMemo(() => {
+    const statusMatch = url.match(/status\/(\d+)/)
+    if (statusMatch?.[1]) {
+      return `https://twitter.com/i/web/status/${statusMatch[1]}`
+    }
+    return url
+  }, [url])
 
   useEffect(() => {
     const existingScript = document.querySelector<HTMLScriptElement>(
@@ -41,12 +48,12 @@ export default function XTweetEmbed({ url }: XTweetEmbedProps) {
     script.setAttribute('data-x-widgets', 'true')
     script.onload = load
     document.body.appendChild(script)
-  }, [url])
+  }, [canonicalUrl])
 
   return (
     <div ref={containerRef}>
       <blockquote className="twitter-tweet">
-        <a href={url}></a>
+        <a href={canonicalUrl}>View on X</a>
       </blockquote>
     </div>
   )
