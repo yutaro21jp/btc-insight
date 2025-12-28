@@ -3,7 +3,7 @@ import { PortableText } from '@portabletext/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Metadata } from 'next'
-import { Tweet } from 'react-tweet'
+import TweetEmbed from '@/components/TweetEmbed'
 
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 const defaultOgImage = new URL('/no-image.png', siteUrl).toString()
@@ -259,7 +259,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
                 const tweetId = extractTweetId(value?.url)
                 return tweetId ? (
                   <div className="flex justify-center my-8">
-                    <Tweet id={tweetId} fetchOptions={{ next: { revalidate: 3600 } }} />
+                    <TweetEmbed id={tweetId} />
                   </div>
                 ) : null
               },
