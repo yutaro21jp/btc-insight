@@ -1,4 +1,4 @@
-import Script from 'next/script'
+import XTweetWidgetLoader from '@/components/XTweetWidgetLoader'
 
 type XTweetEmbedProps = {
   url: string
@@ -12,14 +12,12 @@ export default function XTweetEmbed({ url }: XTweetEmbedProps) {
     }
     return url
   })()
+  const tweetId = url.match(/status\/(\d+)/)?.[1]
+  const containerId = tweetId ? `x-tweet-${tweetId}` : undefined
 
   return (
-    <div>
-      <Script
-        id="x-widgets"
-        src="https://platform.twitter.com/widgets.js"
-        strategy="afterInteractive"
-      />
+    <div id={containerId}>
+      <XTweetWidgetLoader targetId={containerId} />
       <blockquote className="twitter-tweet">
         <a href={canonicalUrl}>View on X</a>
       </blockquote>
