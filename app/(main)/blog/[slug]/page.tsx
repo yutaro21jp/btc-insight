@@ -8,6 +8,15 @@ import { Tweet } from 'react-tweet'
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 const defaultOgImage = new URL('/no-image.png', siteUrl).toString()
 
+const extractTweetId = (url: string | undefined) => {
+  if (!url) return null
+  const statusMatch = url.match(/status\/(\d+)/)
+  if (statusMatch?.[1]) return statusMatch[1]
+  const lastSegment = url.split('/').pop() || ''
+  const trimmed = lastSegment.split('?')[0].split('#')[0]
+  return /^\d+$/.test(trimmed) ? trimmed : null
+}
+
 const extractSummary = (post: any, maxLength = 140) => {
   if (post?.excerpt) return post.excerpt
   const firstBlock = post?.body?.find((block: any) => block._type === 'block')
@@ -247,7 +256,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
             listItem: ({children}) => <li className="mb-2">{children}</li>,
             types: {
               tweetEmbed: ({ value }) => {
-                const tweetId = value.url.split('/').pop()
+                const tweetId = extractTweetId(value?.url)
                 return tweetId ? (
                   <div className="flex justify-center my-8">
                     <Tweet id={tweetId} />
