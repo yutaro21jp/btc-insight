@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import './globals.css';
 
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -45,11 +44,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja">
       <body>
-        <Script
-          id="x-widgets"
-          src="https://platform.twitter.com/widgets.js"
-          strategy="afterInteractive"
-        />
         {children}
       </body>
     </html>
