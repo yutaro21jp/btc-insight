@@ -1,4 +1,4 @@
-import XTweetWidgetLoader from '@/components/XTweetWidgetLoader'
+import XTweetEmbedClient from '@/components/XTweetEmbedClient'
 
 type XTweetEmbedProps = {
   url: string
@@ -17,10 +17,13 @@ export default function XTweetEmbed({ url }: XTweetEmbedProps) {
 
   return (
     <div id={containerId}>
-      <XTweetWidgetLoader targetId={containerId} />
-      <blockquote className="twitter-tweet">
-        <a href={canonicalUrl}>View on X</a>
-      </blockquote>
+      {tweetId ? (
+        <XTweetEmbedClient tweetId={tweetId} targetId={containerId} />
+      ) : (
+        <blockquote className="twitter-tweet">
+          <a href={canonicalUrl}>View on X</a>
+        </blockquote>
+      )}
     </div>
   )
 }

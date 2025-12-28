@@ -6,17 +6,18 @@ declare global {
   interface Window {
     twttr?: {
       widgets: {
-        load: (el?: HTMLElement) => void
+        createTweet: (id: string, el: HTMLElement, options?: Record<string, unknown>) => Promise<HTMLElement>
       }
     }
   }
 }
 
-type XTweetWidgetLoaderProps = {
+type XTweetEmbedClientProps = {
+  tweetId: string
   targetId?: string
 }
 
-export default function XTweetWidgetLoader({ targetId }: XTweetWidgetLoaderProps) {
+export default function XTweetEmbedClient({ tweetId, targetId }: XTweetEmbedClientProps) {
   useEffect(() => {
     let cancelled = false
     let attempts = 0
@@ -25,9 +26,9 @@ export default function XTweetWidgetLoader({ targetId }: XTweetWidgetLoaderProps
 
     const load = () => {
       if (cancelled) return
-      const target = targetId ? document.getElementById(targetId) : undefined
-      if (window.twttr?.widgets?.load) {
-        window.twttr.widgets.load(target ?? undefined)
+      const target = targetId ? document.getElementById(targetId) : null
+      if (target && window.twttr?.widgets?.createTweet) {
+        window.twttr.widgets.createTweet(tweetId, target, { align: 'center' })
         return
       }
       if (attempts < maxAttempts) {
@@ -41,7 +42,7 @@ export default function XTweetWidgetLoader({ targetId }: XTweetWidgetLoaderProps
     return () => {
       cancelled = true
     }
-  }, [targetId])
+  }, [tweetId, targetId])
 
   return null
 }
