@@ -259,7 +259,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
                 const tweetId = extractTweetId(value?.url)
                 return tweetId ? (
                   <div className="flex justify-center my-8">
-                    <Tweet id={tweetId} />
+                    <Tweet id={tweetId} fetchOptions={{ next: { revalidate: 3600 } }} />
                   </div>
                 ) : null
               },
