@@ -278,6 +278,24 @@ export default async function PostPage({ params }: { params: { slug: string } })
                   </div>
                 );
               },
+              codeBlock: ({ value }) => {
+                const code = value?.code || ''
+                if (!code) return null
+                const language = value?.language || 'text'
+                const showLanguage = language && language !== 'text'
+                return (
+                  <div className="my-6">
+                    {showLanguage && (
+                      <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">
+                        {language}
+                      </div>
+                    )}
+                    <pre className="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto text-sm">
+                      <code className="font-mono" data-language={language}>{code}</code>
+                    </pre>
+                  </div>
+                )
+              },
               image: ({ value }) => {
                 if (!value || !value.asset || !value.asset._ref) return null;
                 return (

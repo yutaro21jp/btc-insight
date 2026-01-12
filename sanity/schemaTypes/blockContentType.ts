@@ -87,5 +87,56 @@ export const blockContentType = defineType({
     defineArrayMember({
       type: 'youtubeEmbed',
     }),
+    defineArrayMember({
+      name: 'codeBlock',
+      title: 'Code',
+      type: 'object',
+      fields: [
+        {
+          name: 'language',
+          title: 'Language',
+          type: 'string',
+          options: {
+            list: [
+              {title: 'Plain text', value: 'text'},
+              {title: 'JavaScript', value: 'javascript'},
+              {title: 'TypeScript', value: 'typescript'},
+              {title: 'Bash', value: 'bash'},
+              {title: 'JSON', value: 'json'},
+              {title: 'YAML', value: 'yaml'},
+              {title: 'HTML', value: 'html'},
+              {title: 'CSS', value: 'css'},
+              {title: 'Python', value: 'python'},
+              {title: 'Go', value: 'go'},
+              {title: 'Rust', value: 'rust'},
+              {title: 'SQL', value: 'sql'},
+              {title: 'Markdown', value: 'markdown'},
+            ],
+            layout: 'dropdown',
+          },
+        },
+        {
+          name: 'code',
+          title: 'Code',
+          type: 'text',
+          options: {
+            rows: 10,
+          },
+        },
+      ],
+      preview: {
+        select: {
+          language: 'language',
+          code: 'code',
+        },
+        prepare({language, code}) {
+          const firstLine = (code || '').split('\n')[0]
+          return {
+            title: firstLine || '(no code)',
+            subtitle: language ? `Language: ${language}` : 'Language: text',
+          }
+        },
+      },
+    }),
   ],
 })
