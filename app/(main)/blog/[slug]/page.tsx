@@ -174,7 +174,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
           className="rounded w-full h-auto mb-6"
         />
       )}
-      <article className="text-gray-800 leading-relaxed">
+      <article className="text-gray-800 leading-relaxed break-words [overflow-wrap:anywhere]">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdEntities) }}
@@ -197,7 +197,12 @@ export default async function PostPage({ params }: { params: { slug: string } })
                 const rel = value.blank ? 'noreferrer noopener' : undefined;
                 const target = value.blank ? '_blank' : undefined;
                 return (
-                  <a href={value.href} rel={rel} target={target} className="text-blue-600 hover:underline">
+                  <a
+                    href={value.href}
+                    rel={rel}
+                    target={target}
+                    className="text-blue-600 hover:underline break-all"
+                  >
                     {children}
                   </a>
                 )
