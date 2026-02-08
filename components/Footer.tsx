@@ -10,7 +10,7 @@ export default function Footer() {
             <Link href="/" className="text-gray-500 hover:text-gray-900">ホーム</Link>
             <Link href="/blog" className="text-gray-500 hover:text-gray-900">記事</Link>
             <Link href="https://diamondhandscommunity.substack.com/about" className="text-gray-500 hover:text-gray-900" target="_blank" rel="noopener noreferrer">後援</Link>
-            <Link href="https://diamondhandscommunity.substack.com/t/btc-insight" className="text-gray-500 hover:text-gray-900" target="_blank" rel="noopener noreferrer">ニュースレター</Link>
+            <Link href="https://diamondhandscommunity.substack.com" className="text-gray-500 hover:text-gray-900" target="_blank" rel="noopener noreferrer">ニュースレター</Link>
           </nav>
           <div className="text-sm text-gray-500 order-2 md:order-1 text-center md:text-left">
             &copy; {new Date().getFullYear()} <Link href="/" className="hover:underline">BTCインサイト</Link>. All rights reserved.

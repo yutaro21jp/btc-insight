@@ -42,7 +42,7 @@ export default function Header() {
           <Link href="/">ホーム</Link>
           <Link href="/blog">記事</Link>
           <Link href="https://diamondhandscommunity.substack.com/about" target="_blank" rel="noopener noreferrer">後援</Link>
-          <Link href="https://diamondhandscommunity.substack.com/t/btc-insight" target="_blank" rel="noopener noreferrer">ニュースレター</Link>
+          <Link href="https://diamondhandscommunity.substack.com" target="_blank" rel="noopener noreferrer">ニュースレター</Link>
         </nav>
       </div>
 
@@ -53,7 +53,7 @@ export default function Header() {
             <Link href="/" onClick={() => setIsOpen(false)}>ホーム</Link>
             <Link href="/blog" onClick={() => setIsOpen(false)}>記事</Link>
             <Link href="https://diamondhandscommunity.substack.com/about" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>後援</Link>
-            <Link href="https://diamondhandscommunity.substack.com/t/btc-insight" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>ニュースレター</Link>
+            <Link href="https://diamondhandscommunity.substack.com" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>ニュースレター</Link>
           </nav>
         </div>
       )}
