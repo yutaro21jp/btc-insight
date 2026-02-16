@@ -51,6 +51,8 @@ export default async function BlogPage() {
     getAllCategories(),
     getAllTags(),
   ])
+  const hiddenSidebarTagNames = new Set(['Bitcoin Atlantis', 'Bitcoin Tokyo 2024', 'WebX 2025'])
+  const visibleSidebarTags = tags.filter((tag) => !hiddenSidebarTagNames.has(tag.name))
 
   const breadcrumbList = {
     '@context': 'https://schema.org',
@@ -125,7 +127,7 @@ export default async function BlogPage() {
             <div>
               <h2 className="text-xl font-bold mb-3">タグ</h2>
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag) => (
+                {visibleSidebarTags.map((tag) => (
                   <Link
                     key={tag.slug}
                     href={`/tags/${tag.slug}`}
