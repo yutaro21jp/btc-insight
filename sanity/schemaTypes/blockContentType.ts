@@ -1,4 +1,4 @@
-import {defineType, defineArrayMember} from 'sanity'
+import {defineType, defineArrayMember, defineField} from 'sanity'
 import {ImageIcon} from '@sanity/icons'
 
 /**
@@ -86,6 +86,30 @@ export const blockContentType = defineType({
     }),
     defineArrayMember({
       type: 'youtubeEmbed',
+    }),
+    defineArrayMember({
+      name: 'divider',
+      title: 'Divider',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'style',
+          title: 'Style',
+          type: 'string',
+          options: {
+            list: [{title: 'Solid', value: 'solid'}],
+            layout: 'radio',
+          },
+          initialValue: 'solid',
+        }),
+      ],
+      preview: {
+        prepare() {
+          return {
+            title: 'Divider',
+          }
+        },
+      },
     }),
     defineArrayMember({
       name: 'codeBlock',

@@ -264,6 +264,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
                   </div>
                 )
               },
+              divider: () => <hr className="my-10 border-t border-gray-300" aria-hidden="true" />,
               image: ({ value }) => {
                 if (!value || !value.asset || !value.asset._ref) return null;
                 return (
