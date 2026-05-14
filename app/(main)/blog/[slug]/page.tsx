@@ -169,8 +169,9 @@ export default async function PostPage({ params }: { params: { slug: string } })
         <Image
           src={urlFor(post.mainImage).url()}
           alt={post.title}
-          width={800} // Next.jsの最適化のための幅
-          height={400} // Next.jsの最適化のための高さ
+          width={800} // 表示枠の基準幅
+          height={400} // 表示枠の基準高さ
+          sizes="(min-width: 768px) 768px, 100vw"
           className="rounded w-full h-auto mb-6"
         />
       )}
@@ -272,8 +273,9 @@ export default async function PostPage({ params }: { params: { slug: string } })
                     <Image
                       src={urlFor(value).url()}
                       alt={value.alt || ''}
-                      width={800} // 適切な幅を設定
-                      height={450} // 適切な高さを設定
+                      width={800} // 表示枠の基準幅
+                      height={450} // 表示枠の基準高さ
+                      sizes="(min-width: 768px) 768px, 100vw"
                       className="rounded-lg max-w-full h-auto"
                     />
                   </div>
@@ -292,6 +294,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
               alt={post.author?.name || 'Author'}
               width={60}
               height={60}
+              sizes="60px"
               className="rounded-full object-cover"
             />
           </Link>
@@ -302,6 +305,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
             alt={post.author?.name || 'Author'}
             width={60}
             height={60}
+            sizes="60px"
             className="rounded-full mr-2 object-cover"
           />
         )}
@@ -414,6 +418,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
                       alt={related.title}
                       width={600}
                       height={320}
+                      sizes="(min-width: 640px) 50vw, 100vw"
                       className="object-cover w-full h-40"
                     />
                   )}

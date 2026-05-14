@@ -19,6 +19,7 @@ export default function Header() {
             alt="BTCインサイト"
             width={192}
             height={192}
+            unoptimized
           />
         </Link>
 

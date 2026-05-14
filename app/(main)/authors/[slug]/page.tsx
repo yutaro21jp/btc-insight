@@ -136,6 +136,7 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
                   alt={author.name}
                   width={200}
                   height={200}
+                  sizes="112px"
                   className="rounded-full object-cover w-24 h-24 md:w-28 md:h-28"
                 />
               )}
@@ -226,6 +227,7 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
                       alt={post.title}
                       width={800}
                       height={400}
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className="object-cover w-full h-48"
                     />
                   )}
