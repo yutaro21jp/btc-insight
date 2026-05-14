@@ -1,8 +1,8 @@
 
 import { getPosts, getWelcomePost, urlFor } from '@/lib/sanity'
 import Link from 'next/link'
-import Image from 'next/image'
 import Timeline from '@/components/Timeline'
+import SafeImage from '@/components/SafeImage'
 
 export const revalidate = 60 // ISRで1分更新
 
@@ -49,16 +49,14 @@ export default async function HomePage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post) => (
           <Link key={post._id} href={`/blog/${post.slug.current}`} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            {post.mainImage && (
-              <Image
-                src={urlFor(post.mainImage).width(800).height(400).url()}
-                alt={post.title}
-                width={800}
-                height={400}
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="object-cover w-full h-48"
-              />
-            )}
+            <SafeImage
+              src={post.mainImage ? urlFor(post.mainImage).width(800).height(400).format('webp').url() : null}
+              alt={post.title}
+              width={800}
+              height={400}
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              className="object-cover w-full h-48"
+            />
             <div className="p-4">
               <p className="text-gray-500 text-sm">
                 {post.publishedAt

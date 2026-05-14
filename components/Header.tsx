@@ -15,11 +15,10 @@ export default function Header() {
         {/* 左：ロゴ */}
         <Link href="/" className="flex items-center space-x-2">
           <Image
-            src="/btc-insight-header.png" // ロゴ画像パス
+            src="/images/common/btc-insight-header.webp" // ロゴ画像パス
             alt="BTCインサイト"
             width={192}
             height={192}
-            unoptimized
           />
         </Link>
 

@@ -1,12 +1,12 @@
 import { getPostBySlug, getRelatedPosts, urlFor } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
-import Image from 'next/image'
+import SafeImage from '@/components/SafeImage'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import XTweetEmbed from '@/components/XTweetEmbed'
 
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-const defaultOgImage = new URL('/no-image.png', siteUrl).toString()
+const defaultOgImage = new URL('/images/og/no-image.webp', siteUrl).toString()
 
 const extractSummary = (post: any, maxLength = 140) => {
   if (post?.excerpt) return post.excerpt
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const pageTitle = `${post.title} | ${siteName}`;
   const description = extractSummary(post)
 
-  const ogImage = post.mainImage ? urlFor(post.mainImage).width(1200).height(630).url() : defaultOgImage
+  const ogImage = post.mainImage ? urlFor(post.mainImage).width(1200).height(630).format('webp').url() : defaultOgImage
   const canonical = `/blog/${post.slug.current}`
   const absoluteUrl = new URL(canonical, siteUrl).toString()
 
@@ -65,7 +65,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
   const shouldShowMainImage = post.showMainImageAtTop !== false
   const description = extractSummary(post, 160)
-  const ogImage = post.mainImage ? urlFor(post.mainImage).width(1200).height(630).url() : defaultOgImage
+  const ogImage = post.mainImage ? urlFor(post.mainImage).width(1200).height(630).format('webp').url() : defaultOgImage
   const canonicalPath = `/blog/${post.slug.current}`
   const pageUrl = new URL(canonicalPath, siteUrl).toString()
   const categorySlugs = post.categories?.map((c: any) => c.slug.current) || []
@@ -74,6 +74,11 @@ export default async function PostPage({ params }: { params: { slug: string } })
   const articleSection = post.categories?.[0]?.title
   const relatedPosts = await getRelatedPosts(post.slug.current, categorySlugs, tagSlugs)
   const faqs = (post.faq || []).filter((item: any) => item?.question && item?.answer)
+  const authorImageSrc = post.author?.name === 'yutaro'
+    ? '/images/common/yutaro.webp'
+    : post.author?.image
+      ? urlFor(post.author.image).width(60).height(60).fit('crop').format('webp').url()
+      : null
 
   const breadcrumbs = [
     { name: 'ホーム', href: '/' },
@@ -110,7 +115,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
       name: 'BTCインサイト',
       logo: {
         '@type': 'ImageObject',
-        url: new URL('/btc-insight-logo.png', siteUrl).toString(),
+        url: new URL('/images/common/btc-insight-logo.webp', siteUrl).toString(),
       },
     },
   }
@@ -165,9 +170,9 @@ export default async function PostPage({ params }: { params: { slug: string } })
         })}
       </nav>
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
-      {post.mainImage && shouldShowMainImage && (
-        <Image
-          src={urlFor(post.mainImage).url()}
+      {shouldShowMainImage && (
+        <SafeImage
+          src={post.mainImage ? urlFor(post.mainImage).format('webp').url() : null}
           alt={post.title}
           width={800} // 表示枠の基準幅
           height={400} // 表示枠の基準高さ
@@ -270,8 +275,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
                 if (!value || !value.asset || !value.asset._ref) return null;
                 return (
                   <div className="my-8 flex justify-center">
-                    <Image
-                      src={urlFor(value).url()}
+                    <SafeImage
+                      src={urlFor(value).format('webp').url()}
                       alt={value.alt || ''}
                       width={800} // 表示枠の基準幅
                       height={450} // 表示枠の基準高さ
@@ -289,8 +294,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
       <div className="mt-10 flex items-center text-gray-500 text-sm">
         {post.author?.slug && (
           <Link href={`/authors/${post.author.slug}`} className="mr-2">
-            <Image
-              src={post.author?.name === 'yutaro' ? '/yutaro.JPG' : urlFor(post.author?.image).width(60).height(60).fit('crop').url()}
+            <SafeImage
+              src={authorImageSrc}
               alt={post.author?.name || 'Author'}
               width={60}
               height={60}
@@ -300,8 +305,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
           </Link>
         )}
         {!post.author?.slug && (
-          <Image
-            src={post.author?.name === 'yutaro' ? '/yutaro.JPG' : urlFor(post.author?.image).width(60).height(60).fit('crop').url()}
+          <SafeImage
+            src={authorImageSrc}
             alt={post.author?.name || 'Author'}
             width={60}
             height={60}
@@ -412,16 +417,14 @@ export default async function PostPage({ params }: { params: { slug: string } })
               const relatedUrl = `/blog/${related.slug.current}`
               return (
                 <Link key={related._id} href={relatedUrl} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition block">
-                  {related.mainImage && (
-                    <Image
-                      src={urlFor(related.mainImage).width(600).height(320).url()}
-                      alt={related.title}
-                      width={600}
-                      height={320}
-                      sizes="(min-width: 640px) 50vw, 100vw"
-                      className="object-cover w-full h-40"
-                    />
-                  )}
+                  <SafeImage
+                    src={related.mainImage ? urlFor(related.mainImage).width(600).height(320).format('webp').url() : null}
+                    alt={related.title}
+                    width={600}
+                    height={320}
+                    sizes="(min-width: 640px) 50vw, 100vw"
+                    className="object-cover w-full h-40"
+                  />
                   <div className="p-4">
                     <p className="text-gray-500 text-xs">
                       {related.publishedAt

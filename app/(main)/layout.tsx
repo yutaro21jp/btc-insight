@@ -13,7 +13,7 @@ const organizationJsonLd = {
   '@type': 'Organization',
   name: 'BTCインサイト',
   url: siteUrl,
-  logo: new URL('/btc-insight-logo.png', siteUrl).toString(),
+  logo: new URL('/images/common/btc-insight-logo.webp', siteUrl).toString(),
 };
 
 const websiteJsonLd = {

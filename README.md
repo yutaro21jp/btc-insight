@@ -1,4 +1,4 @@
-![BTC Insight Header](/public/btc-insight-header.png)
+![BTC Insight Header](/public/images/common/btc-insight-header.webp)
 
 BTCインサイトは、「ビットコインの最新ニュースを、日本語で、わかりやすく」提供するサイトです。
 
@@ -17,12 +17,12 @@ https://diamondhandscommunity.substack.com/t/btc-insight
 - ビットコイン関連商品がライトニング決済と匿名配送で買える：Lightning Base 様
 
 ## ロゴ
-<img src="/public/btc-insight-logo.png" alt="BTCインサイト" width="150" height="150">
+<img src="/public/images/common/btc-insight-logo.webp" alt="BTCインサイト" width="150" height="150">
 
 ビットコインの情報をキャッチするアンテナをモチーフにしています。
 
 ## 後援
-<img src="/public/DH-MAGAZINE.png" alt="DH MAGAZINE" width="150" height="150">
+<img src="/public/images/common/DH-MAGAZINE.webp" alt="DH MAGAZINE" width="150" height="150">
 
 https://diamondhandscommunity.substack.com
 

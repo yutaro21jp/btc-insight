@@ -1,13 +1,13 @@
 import { getAuthorBySlug, getPostsByAuthorSlug, urlFor } from '@/lib/sanity'
 import Link from 'next/link'
-import Image from 'next/image'
+import SafeImage from '@/components/SafeImage'
 import { Metadata } from 'next'
 import { PortableText } from '@portabletext/react'
 
 export const revalidate = 60 // ISRで1分更新
 
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-const defaultOgImage = new URL('/no-image.png', siteUrl).toString()
+const defaultOgImage = new URL('/images/og/no-image.webp', siteUrl).toString()
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const authorSlug = params.slug
@@ -131,8 +131,8 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
             <div className="flex flex-col md:flex-row md:items-center gap-4">
               {author.image && (
-                <Image
-                  src={urlFor(author.image).width(200).height(200).fit('crop').url()}
+                <SafeImage
+                  src={urlFor(author.image).width(200).height(200).fit('crop').format('webp').url()}
                   alt={author.name}
                   width={200}
                   height={200}
@@ -221,16 +221,14 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {posts.map((post) => (
                 <Link key={post._id} href={`/blog/${post.slug.current}`} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-                  {post.mainImage && (
-                    <Image
-                      src={urlFor(post.mainImage).width(800).height(400).url()}
-                      alt={post.title}
-                      width={800}
-                      height={400}
-                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover w-full h-48"
-                    />
-                  )}
+                  <SafeImage
+                    src={post.mainImage ? urlFor(post.mainImage).width(800).height(400).format('webp').url() : null}
+                    alt={post.title}
+                    width={800}
+                    height={400}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover w-full h-48"
+                  />
                   <div className="p-4">
                     <p className="text-gray-500 text-sm">
                       {post.publishedAt

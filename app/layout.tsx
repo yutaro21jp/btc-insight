@@ -4,14 +4,14 @@ import './globals.css';
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 const defaultTitle = 'BTCインサイト';
 const defaultDescription = 'ビットコインの最新ニュースを日本語で、わかりやすく。';
-const defaultOgImage = new URL('/no-image.png', siteUrl).toString();
+const defaultOgImage = new URL('/images/og/no-image.webp', siteUrl).toString();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: defaultTitle,
   description: defaultDescription,
   icons: {
-    icon: '/btc-insight-logo.png',
+    icon: '/images/common/btc-insight-logo.webp',
   },
   alternates: {
     canonical: '/',
