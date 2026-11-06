@@ -2,7 +2,14 @@
 
 import { useState } from 'react'
 
-const timelineData = [
+type TimelineEvent = {
+  title: string
+  description: string
+  dateLabel?: string
+  sources?: { label: string; url: string }[]
+}
+
+const timelineData: { year: string; events: TimelineEvent[] }[] = [
   {
     year: '2008',
     events: [
@@ -218,25 +225,79 @@ const timelineData = [
         description:
           '現物ETFへの資金流入などを背景に、3月には価格が73,000ドルを超え、史上最高値を更新する。',
       },
+      {
+        dateLabel: '12月',
+        title: 'ビットコイン、史上初の10万ドル突破',
+        description:
+          'ビットコイン価格が初めて1BTC＝10万米ドルを突破。米国時間12月4日夜、日本時間では12月5日に、初めて6桁のドル価格に到達した。',
+        sources: [
+          {
+            label: 'Coinbase Institutional',
+            url: 'https://www.coinbase.com/en-gb/institutional/research-insights/research/weekly-market-commentary/weekly-2024-12-06',
+          },
+        ],
+      },
     ],
   },
   {
     year: '2025',
     events: [
       {
-        title: 'ニューハンプシャー州、米国初の州ビットコイン準備金へ',
+        dateLabel: '3月6日',
+        title: '米国が戦略的ビットコイン準備金の設立を指示',
         description:
-          'ニューハンプシャー州が州政府資金の最大5%をビットコイン等に投資可能とする法案HB 302を可決し、米国初の州による仮想通貨準備金設立が可能になった。',
+          '大統領令が、政府が没収などで保有するビットコインを原資とした準備金の設立を指示。組み入れたBTCは原則として売却せず、準備資産として保有する方針を示した。',
+        sources: [
+          {
+            label: 'ホワイトハウス・大統領令',
+            url: 'https://www.whitehouse.gov/presidential-actions/2025/03/establishment-of-the-strategic-bitcoin-reserve-and-united-states-digital-asset-stockpile/',
+          },
+        ],
       },
       {
-        title: 'ビットコイン、史上初の10万ドル突破',
+        dateLabel: '5月6日',
+        title: 'ニューハンプシャー州、州資金のビットコイン投資を可能に',
         description:
-          'ETFを通じた資金流入とトレジャリー企業の保有拡大が加速し、ビットコインは国際的な資産クラスとしての存在感をさらに強めた。',
+          '州資金の投資対象にビットコインを含められるHB302が、知事の署名で成立。投資額の上限や保管方法を定め、州によるビットコイン保有の法的な枠組みを設けた。',
+        sources: [
+          {
+            label: 'ニューハンプシャー州議会・成立状況',
+            url: 'https://gc.nh.gov/bill_status/billinfo.aspx?id=707',
+          },
+          {
+            label: 'HB302本文',
+            url: 'https://gc.nh.gov/bill_status/legacy/bs2016/billText.aspx?id=707&sy=2025&v=SP',
+          },
+        ],
       },
       {
-        title: '国際的な法定通貨化議論の拡大',
+        dateLabel: '2025年後半',
+        title: 'テキサス州がビットコイン準備金に資金を投入',
         description:
-          'エルサルバドルに続いて、複数の国でビットコイン法定通貨化や中央銀行による準備資産化を検討する動きが活発化中。',
+          '州議会が準備金に1,000万ドルを配分。州会計監査官の年次報告によると、2025年後半に500万ドル規模のビットコイン投資を実施し、州予算を使った運用へ進んだ。',
+        sources: [
+          {
+            label: 'テキサス州会計監査官・年次財務報告',
+            url: 'https://comptroller.texas.gov/transparency/reports/comprehensive-annual-financial/2025/intro.pdf',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    year: '2026',
+    events: [
+      {
+        dateLabel: '3月9日',
+        title: 'ビットコインの発行枚数が約2,000万BTCに到達',
+        description:
+          'ブロック高940,000に到達し、発行スケジュール上の累計が約2,000万BTCに。上限2,100万BTCまで残る約100万BTCは、今後の半減期を経ながら発行される。',
+        sources: [
+          {
+            label: 'mempool.space・ブロック940,000',
+            url: 'https://mempool.space/block/000000000000000000002afe1e2f7e176047529419532b2a6773c45623a02c12',
+          },
+        ],
       },
     ],
   },
@@ -258,7 +319,7 @@ export default function Timeline() {
       <h2 className="text-3xl font-bold text-center mb-12 text-orange-500">ビットコイン歴史年表</h2>
       <div className="border-l-2 border-gray-200">
         {timelineData.map((item) => (
-          <div key={item.year} className="relative">
+          <div key={item.year} id={`timeline-${item.year}`} className="relative scroll-mt-8">
             <div
               onClick={() => toggleYear(item.year)}
               className="absolute -left-[11px] top-0 h-full cursor-pointer"
@@ -276,8 +337,27 @@ export default function Timeline() {
                 <div className="mt-4 mb-8">
                   {item.events.map((event, index) => (
                     <div key={index} className="p-4 border rounded-lg shadow-sm">
+                      {event.dateLabel && (
+                        <p className="text-sm text-gray-500 mb-1">{event.dateLabel}</p>
+                      )}
                       <h3 className="font-bold">{event.title}</h3>
                       <p className="mt-2 text-gray-600">{event.description}</p>
+                      {event.sources && (
+                        <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-gray-500">
+                          <span>出典：</span>
+                          {event.sources.map((source) => (
+                            <a
+                              key={source.url}
+                              href={source.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="underline underline-offset-2 hover:text-orange-600"
+                            >
+                              {source.label}
+                            </a>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
