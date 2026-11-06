@@ -1,15 +1,15 @@
-const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+import type { MetadataRoute } from 'next'
+import { absoluteUrl, siteUrl } from '@/lib/site'
 
-export default function robots() {
+export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/studio'],
       },
     ],
-    sitemap: `${siteUrl}/sitemap.xml`,
+    sitemap: absoluteUrl('/sitemap.xml'),
     host: siteUrl,
   }
 }

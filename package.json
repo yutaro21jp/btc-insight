@@ -2,35 +2,50 @@
   "name": "btc-insight",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
+  "overrides": {
+    "sucrase": {
+      "glob": "^14.0.4"
+    },
+    "eslint": "$eslint",
+    "minimatch@>=7.0.0 <11.0.1": "^11.0.5"
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "next typegen && tsc --noEmit",
+    "audit": "npm audit --audit-level=low",
+    "check:content": "node --import tsx scripts/check-content.ts",
+    "prebuild": "npm run check:content",
+    "test": "node --import tsx --test tests/*.test.ts"
   },
   "dependencies": {
-    "@portabletext/react": "^3.2.1",
-    "@sanity/icons": "^3.7.4",
-    "@sanity/image-url": "^1.1.0",
-    "@sanity/vision": "^3.99.0",
-    "next": "^14.2.35",
-    "next-sanity": "^9.12.3",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-tweet": "^3.2.2",
-    "sanity": "^3.99.0",
-    "styled-components": "^6.1.19"
+    "gray-matter": "^4.0.3",
+    "next": "^16.4.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
-    "eslint": "^8",
-    "eslint-config-next": "^14.2.35",
+    "eslint": "^10.14.0",
+    "eslint-config-next": "^16.4.5",
     "postcss": "^8.5.6",
-    "sharp": "^0.34.5",
+    "prettier": "^3.9.10",
+    "sharp": "^0.35.5",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

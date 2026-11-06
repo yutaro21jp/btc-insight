@@ -14,7 +14,7 @@ async function walk(dir) {
       const fullPath = path.join(dir, entry.name)
       if (entry.isDirectory()) return walk(fullPath)
       return fullPath
-    }),
+    })
   )
 
   return files.flat()
@@ -27,7 +27,7 @@ async function formatBytes(bytes) {
 }
 
 const files = (await walk(publicImagesDir)).filter((file) =>
-  sourceExtensions.has(path.extname(file).toLowerCase()),
+  sourceExtensions.has(path.extname(file).toLowerCase())
 )
 
 if (!files.length) {
@@ -41,10 +41,7 @@ for (const sourcePath of files) {
   const parsed = path.parse(sourcePath)
   const outputPath = path.join(parsed.dir, `${parsed.name}.webp`)
 
-  await sharp(sourcePath)
-    .rotate()
-    .webp({ quality })
-    .toFile(outputPath)
+  await sharp(sourcePath).rotate().webp({ quality }).toFile(outputPath)
 
   const [sourceStat, outputStat, metadata] = await Promise.all([
     fs.stat(sourcePath),
@@ -55,6 +52,6 @@ for (const sourcePath of files) {
   const relativeSource = path.relative(projectRoot, sourcePath)
   const relativeOutput = path.relative(projectRoot, outputPath)
   console.log(
-    `${relativeSource} -> ${relativeOutput} (${metadata.width}x${metadata.height}, ${await formatBytes(sourceStat.size)} -> ${await formatBytes(outputStat.size)})`,
+    `${relativeSource} -> ${relativeOutput} (${metadata.width}x${metadata.height}, ${await formatBytes(sourceStat.size)} -> ${await formatBytes(outputStat.size)})`
   )
 }

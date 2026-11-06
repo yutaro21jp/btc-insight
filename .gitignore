@@ -1,7 +1,10 @@
 # dependencies
 /node_modules
 /.next
-/.env.local
-
-# Sanity
-/studio/dist
+.env*
+!.env.example
+.DS_Store
+*.tsbuildinfo
+/output/
+/.playwright-cli/
+/coverage/

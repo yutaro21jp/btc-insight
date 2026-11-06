@@ -1,5 +1,4 @@
-
-"use client"
+'use client'
 
 import Link from 'next/link'
 import Image from 'next/image'
@@ -11,19 +10,24 @@ export default function Header() {
   return (
     <header className="w-full border-b">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        
         {/* 左：ロゴ */}
         <Link href="/" className="flex items-center space-x-2">
           <Image
-            src="/images/common/btc-insight-header.webp" // ロゴ画像パス
+            src="/images/common/btc-insight-header.webp"
             alt="BTCインサイト"
-            width={192}
-            height={192}
+            width={2048}
+            height={300}
+            className="w-48 h-auto"
+            priority
           />
         </Link>
 
         {/* ハンバーガーメニューボタン（モバイル用） */}
         <button
+          type="button"
+          aria-label={isOpen ? 'メニューを閉じる' : 'メニューを開く'}
+          aria-expanded={isOpen}
+          aria-controls="mobile-navigation"
           className="md:hidden flex items-center px-3 py-2 border rounded text-purple-700 border-purple-700 hover:text-purple-900 hover:border-purple-900"
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -41,19 +45,52 @@ export default function Header() {
         <nav className="hidden md:flex space-x-6 text-purple-700 text-sm sm:text-base font-medium">
           <Link href="/">ホーム</Link>
           <Link href="/blog">記事</Link>
-          <Link href="https://diamondhandscommunity.substack.com/about" target="_blank" rel="noopener noreferrer">後援</Link>
-          <Link href="https://diamondhandscommunity.substack.com" target="_blank" rel="noopener noreferrer">ニュースレター</Link>
+          <Link
+            href="https://diamondhandscommunity.substack.com/about"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            後援
+          </Link>
+          <Link
+            href="https://diamondhandscommunity.substack.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ニュースレター
+          </Link>
         </nav>
       </div>
 
       {/* モバイルメニュー */}
       {isOpen && (
         <div className="md:hidden bg-white border-b">
-          <nav className="flex flex-col items-center py-4 space-y-4 text-purple-700 text-base font-medium">
-            <Link href="/" onClick={() => setIsOpen(false)}>ホーム</Link>
-            <Link href="/blog" onClick={() => setIsOpen(false)}>記事</Link>
-            <Link href="https://diamondhandscommunity.substack.com/about" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>後援</Link>
-            <Link href="https://diamondhandscommunity.substack.com" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>ニュースレター</Link>
+          <nav
+            id="mobile-navigation"
+            className="flex flex-col items-center py-4 space-y-4 text-purple-700 text-base font-medium"
+          >
+            <Link href="/" onClick={() => setIsOpen(false)}>
+              ホーム
+            </Link>
+            <Link href="/blog" onClick={() => setIsOpen(false)}>
+              記事
+            </Link>
+            <Link
+              href="https://diamondhandscommunity.substack.com/about"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsOpen(false)}
+            >
+              後援
+            </Link>
+            <Link
+              href="https://diamondhandscommunity.substack.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsOpen(false)}
+            >
+              ニュースレター
+            </Link>
           </nav>
         </div>
       )}

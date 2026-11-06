@@ -6,7 +6,11 @@ declare global {
   interface Window {
     twttr?: {
       widgets: {
-        createTweet: (id: string, el: HTMLElement, options?: Record<string, unknown>) => Promise<HTMLElement>
+        createTweet: (
+          id: string,
+          el: HTMLElement,
+          options?: Record<string, unknown>
+        ) => Promise<HTMLElement>
       }
     }
   }

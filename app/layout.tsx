@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
-import './globals.css';
+import type { Metadata } from 'next'
+import './globals.css'
 
-const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-const defaultTitle = 'BTCインサイト';
-const defaultDescription = 'ビットコインの最新ニュースを日本語で、わかりやすく。';
-const defaultOgImage = new URL('/images/og/no-image.webp', siteUrl).toString();
+const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+const defaultTitle = 'BTCインサイト'
+const defaultDescription = 'ビットコインの最新ニュースを日本語で、わかりやすく。'
+const defaultOgImage = new URL('/images/og/no-image.webp', siteUrl).toString()
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -38,14 +38,12 @@ export const metadata: Metadata = {
     description: defaultDescription,
     images: [defaultOgImage],
   },
-};
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
-  );
+  )
 }

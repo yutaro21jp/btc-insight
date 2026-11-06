@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
 import Image, { type ImageProps } from 'next/image'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const defaultFallbackSrc = '/images/fallback.webp'
 
@@ -10,25 +10,37 @@ type SafeImageProps = Omit<ImageProps, 'src'> & {
   fallbackSrc?: string
 }
 
-export default function SafeImage({ src, fallbackSrc = defaultFallbackSrc, alt, onError, ...props }: SafeImageProps) {
-  const resolvedSrc = src || fallbackSrc
-  const [currentSrc, setCurrentSrc] = useState(resolvedSrc)
-
-  useEffect(() => {
-    setCurrentSrc(resolvedSrc)
-  }, [resolvedSrc])
+function ImageWithFallback({
+  src,
+  fallbackSrc,
+  alt,
+  onError,
+  ...props
+}: Omit<ImageProps, 'src'> & { src: string; fallbackSrc: string }) {
+  const [failed, setFailed] = useState(false)
 
   return (
     <Image
       {...props}
-      src={currentSrc}
+      src={failed ? fallbackSrc : src}
       alt={alt}
       onError={(event) => {
-        if (currentSrc !== fallbackSrc) {
-          setCurrentSrc(fallbackSrc)
+        if (!failed && src !== fallbackSrc) {
+          setFailed(true)
         }
         onError?.(event)
       }}
     />
+  )
+}
+
+export default function SafeImage({
+  src,
+  fallbackSrc = defaultFallbackSrc,
+  ...props
+}: SafeImageProps) {
+  const resolvedSrc = src || fallbackSrc
+  return (
+    <ImageWithFallback key={resolvedSrc} src={resolvedSrc} fallbackSrc={fallbackSrc} {...props} />
   )
 }

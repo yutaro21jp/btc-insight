@@ -1,76 +1,45 @@
-
-import { getPosts, getWelcomePost, urlFor } from '@/lib/sanity'
 import Link from 'next/link'
+import EmptyPosts from '@/components/EmptyPosts'
+import PostCard from '@/components/PostCard'
 import Timeline from '@/components/Timeline'
-import SafeImage from '@/components/SafeImage'
+import { getPosts } from '@/lib/posts'
 
-type Post = {
-  _id: string
-  title: string
-  slug: { current: string }
-  publishedAt: string
-  mainImage?: {
-    _type: 'image',
-    asset: {
-      _ref: string,
-      _type: 'reference'
-    }
-  }
-}
-
-export default async function HomePage() {
-  const welcomePost = await getWelcomePost()
-  
-  const excludeSlugs = ['welcome']
-  const otherPosts = await getPosts(excludeSlugs)
-
-  let posts: Post[] = []
-  if (welcomePost) {
-    posts.push(welcomePost)
-  }
-  posts = posts.concat(otherPosts.slice(0, 12 - posts.length))
+export default function HomePage() {
+  const posts = getPosts()
+  const welcomePost = posts.find((post) => post.slug === 'welcome')
+  const featured = (
+    welcomePost ? [welcomePost, ...posts.filter((post) => post.slug !== 'welcome')] : posts
+  ).slice(0, 12)
 
   return (
     <div className="max-w-7xl mx-auto px-4">
-      <h1 className="text-xl text-center my-8">ビットコインの最新ニュースを、日本語で、わかりやすく。</h1>
+      <h1 className="text-xl text-center my-8">
+        ビットコインの最新ニュースを、日本語で、わかりやすく。
+      </h1>
       <div className="text-center mb-16">
-        <Link
+        <a
           href="https://diamondhandscommunity.substack.com/"
-          className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300"
           target="_blank"
           rel="noopener noreferrer"
+          className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300"
         >
           無料ニュースレターに登録
-        </Link>
+        </a>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {posts.map((post) => (
-          <Link key={post._id} href={`/blog/${post.slug.current}`} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <SafeImage
-              src={post.mainImage ? urlFor(post.mainImage).width(800).height(400).format('webp').url() : null}
-              alt={post.title}
-              width={800}
-              height={400}
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover w-full h-48"
-            />
-            <div className="p-4">
-              <p className="text-gray-500 text-sm">
-                {post.publishedAt
-                  ? new Date(post.publishedAt).toLocaleDateString('ja-JP', {
-                      year: 'numeric', month: 'long', day: 'numeric'
-                    })
-                  : '日付未設定'}
-              </p>
-              <h2 className="text-lg font-bold mt-1">{post.title}</h2>
-            </div>
-          </Link>
-        ))}
-      </div>
-
+      {featured.length ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featured.map((post) => (
+            <PostCard key={post.slug} post={post} />
+          ))}
+        </div>
+      ) : (
+        <EmptyPosts />
+      )}
       <div className="text-center mt-8">
-        <Link href="/blog" className="inline-block bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition">
+        <Link
+          href="/blog"
+          className="inline-block bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition"
+        >
           ▶︎ ブログ記事をさらに見る
         </Link>
       </div>
