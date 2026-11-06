@@ -17,6 +17,10 @@ const extractSummary = (post: any, maxLength = 140) => {
   return text.length > maxLength ? `${text.slice(0, maxLength)}…` : text
 }
 
+export function generateStaticParams() {
+  return []
+}
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = await getPostBySlug(params.slug)
 

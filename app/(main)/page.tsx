@@ -4,8 +4,6 @@ import Link from 'next/link'
 import Timeline from '@/components/Timeline'
 import SafeImage from '@/components/SafeImage'
 
-export const revalidate = 60 // ISRで1分更新
-
 type Post = {
   _id: string
   title: string

@@ -2,6 +2,9 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+// 公開ページのキャッシュを共有し、更新通知が届かない場合も24時間で再検証する。
+export const revalidate = 86400;
+
 export const metadata = {
   title: 'BTCインサイト',
   description: 'ビットコインの最新ニュースを日本語で、わかりやすく。',

@@ -4,10 +4,12 @@ import SafeImage from '@/components/SafeImage'
 import { Metadata } from 'next'
 import { PortableText } from '@portabletext/react'
 
-export const revalidate = 60 // ISRで1分更新
-
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 const defaultOgImage = new URL('/images/og/no-image.webp', siteUrl).toString()
+
+export function generateStaticParams() {
+  return []
+}
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const authorSlug = params.slug

@@ -4,8 +4,6 @@ import Link from 'next/link'
 import SafeImage from '@/components/SafeImage'
 import { Metadata } from 'next'
 
-export const revalidate = 60 // ISRで1分更新
-
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 const defaultOgImage = new URL('/images/og/no-image.webp', siteUrl).toString()
 
